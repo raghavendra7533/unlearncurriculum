@@ -614,6 +614,27 @@
     ::-webkit-scrollbar-thumb:hover {
       background: rgba(255, 255, 255, 0.3);
     }
+
+    /* Week content viewer styles */
+    #week-content-viewer {
+      min-height: 200px;
+      padding: 0 2rem;
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    
+    .week-content-display {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 
@@ -1103,8 +1124,16 @@
         </div>
       </div>
 
-      <!-- Timeline Container -->
-      <div class="curriculum-timeline relative">
+      <!-- Week Content Viewer -->
+      <div id="week-content-viewer" class="mb-16 bg-white/5 border border-white/10 rounded-lg p-4 min-h-[200px]">
+        <div id="placeholder-text" class="text-text-secondary text-center py-8">
+          <i data-lucide="loader" class="w-6 h-6 mx-auto mb-2 animate-spin"></i>
+          <p>Week content will appear here...</p>
+        </div>
+      </div>
+
+      <!-- Timeline Container (Hidden by default) -->
+      <div class="curriculum-timeline relative hidden" id="curriculum-timeline">
         <!-- Week 0 -->
       <div class="week-module week-0 mb-16 fade-in" data-week="0">
         <!-- Progress Dot -->
@@ -3400,16 +3429,7 @@
       updateProgressIndicators();
       updateCurrentWeekDisplay();
       updateNavigationState();
-      
-      // Scroll to the week module specifically
-      const weekElement = document.querySelector(`.week-module[data-week="${currentWeekIndex}"]`);
-      if (weekElement) {
-        weekElement.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'start',
-          inline: 'nearest'
-        });
-      }
+      showWeekContent(currentWeekIndex);
     }
 
     function jumpToWeek(weekNumber) {
@@ -3419,16 +3439,7 @@
       updateProgressIndicators();
       updateCurrentWeekDisplay();
       updateNavigationState();
-      
-      // Scroll to the week module specifically
-      const weekElement = document.querySelector(`.week-module[data-week="${weekNumber}"]`);
-      if (weekElement) {
-        weekElement.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'start',
-          inline: 'nearest'
-        });
-      }
+      showWeekContent(weekNumber);
       
       // Hide quick nav dropdown
       document.getElementById('quick-nav-dropdown').classList.add('hidden');
@@ -3470,6 +3481,94 @@
 
     function updateCurrentWeekDisplay() {
       document.getElementById('current-week').textContent = weekTitles[currentWeekIndex];
+    }
+
+    function showWeekContent(weekNumber) {
+      console.log('showWeekContent called for week:', weekNumber);
+      const viewer = document.getElementById('week-content-viewer');
+      const weekModule = document.querySelector(`.week-module[data-week="${weekNumber}"]`);
+      
+      console.log('Found elements:', { viewer, weekModule });
+      
+      if (weekModule && viewer) {
+        // Find the main content div - it's the one with the week content classes
+        let weekCard = weekModule.querySelector('.week-card');
+        if (!weekCard) {
+          // For weeks without .week-card class, find the main content div
+          const allDivs = weekModule.querySelectorAll('div');
+          for (let div of allDivs) {
+            if (div.classList.contains('bg-card-bg') || 
+                div.classList.contains('rounded-2xl') ||
+                (div.classList.contains('p-8') && !div.classList.contains('progress-dot'))) {
+              weekCard = div;
+              break;
+            }
+          }
+        }
+        
+        console.log('Found week card:', weekCard);
+        
+        if (weekCard) {
+          // Remove placeholder text
+          const placeholder = document.getElementById('placeholder-text');
+          if (placeholder) {
+            placeholder.remove();
+          }
+          
+          // Clear previous content but keep the viewer visible
+          const existingContent = viewer.querySelector('.week-content-display');
+          if (existingContent) {
+            existingContent.remove();
+          }
+          
+          // Create a new container for the week content
+          const container = document.createElement('div');
+          container.className = 'week-content-display mb-8';
+          container.style.display = 'block';
+          container.style.visibility = 'visible';
+          container.style.opacity = '1';
+          
+          // Clone the week card content
+          const clonedContent = weekCard.cloneNode(true);
+          
+          // Remove any absolute positioning that might interfere
+          clonedContent.style.position = 'relative';
+          clonedContent.classList.add('shadow-lg');
+          
+          // Ensure cloned content is visible
+          clonedContent.style.display = 'block';
+          clonedContent.style.visibility = 'visible';
+          clonedContent.style.opacity = '1';
+          
+          container.appendChild(clonedContent);
+          
+          // Add the content to viewer
+          viewer.appendChild(container);
+          
+          console.log('Content added to viewer. Viewer innerHTML length:', viewer.innerHTML.length);
+          
+          // Re-initialize any icons in the cloned content
+          setTimeout(() => {
+            if (typeof lucide !== 'undefined') {
+              lucide.createIcons();
+            }
+            
+            // Scroll to the viewer after a brief delay
+            viewer.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'start',
+              inline: 'nearest'
+            });
+            
+            console.log('Content should be visible now');
+          }, 200);
+          
+        } else {
+          console.log('No week card found for week', weekNumber);
+        }
+      } else {
+        console.log('Week module or viewer not found', { weekModule, viewer, weekNumber });
+      }
     }
 
     // Session structure: 50 total hours, 16 total sessions
@@ -3542,6 +3641,7 @@
       updateProgressIndicators();
       updateCurrentWeekDisplay();
       updateProgressStats();
+      showWeekContent(0); // Show Week 0 content by default
       
       // Add click handlers for week progress indicators
       document.querySelectorAll('.week-progress-item').forEach((item, index) => {
