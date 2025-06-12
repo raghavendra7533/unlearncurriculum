@@ -1,0 +1,3566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>8-Week Product Maker Cohort</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons for modern, consistent iconography -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  
+  <!-- Tailwind Config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'primary-bg': '#000000',
+            'secondary-bg': '#0a0a0a',
+            'surface': '#111111',
+            'card-bg': 'rgba(255, 255, 255, 0.03)',
+            'card-hover': 'rgba(255, 255, 255, 0.08)',
+            'border-color': 'rgba(255, 255, 255, 0.1)',
+            'border-hover': 'rgba(255, 255, 255, 0.3)',
+            'text-primary': '#ffffff',
+            'text-secondary': '#a0a0a0',
+            'text-muted': '#666666',
+            'accent': '#ffffff',
+            'accent-soft': 'rgba(255, 255, 255, 0.1)',
+            'brand': {
+              'purple': '#8B5CF6',
+              'blue': '#3B82F6',
+              'green': '#10B981',
+              'orange': '#F59E0B',
+              'pink': '#EC4899',
+              'teal': '#14B8A6',
+              'indigo': '#6366F1',
+              'red': '#EF4444'
+            }
+          },
+          fontFamily: {
+            'primary': ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Inter', 'sans-serif'],
+            'display': ['SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'sans-serif']
+          },
+          fontSize: {
+            'hero': 'clamp(2.5rem, 5vw, 4rem)',
+            'membership': 'clamp(3.5rem, 10vw, 7rem)',
+            'subhead': 'clamp(1rem, 2vw, 1.25rem)',
+            'title': 'clamp(1.5rem, 4vw, 2.5rem)',
+            'card-h': '0.9rem',
+            'card-p': '1rem'
+          },
+          spacing: {
+            '18': '4.5rem',
+            '22': '5.5rem'
+          },
+          backdropBlur: {
+            'xs': '2px'
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Custom CSS for Complex Animations and Effects -->
+  <style>
+    /* ===== CSS VARIABLES & COMPLEX ANIMATIONS ===== */
+    :root {
+      /* Shadows & Effects */
+      --shadow-sm: 0 1px 3px rgba(255, 255, 255, 0.05);
+      --shadow-md: 0 4px 12px rgba(255, 255, 255, 0.1);
+      --shadow-lg: 0 8px 32px rgba(255, 255, 255, 0.15);
+      --shadow-xl: 0 20px 60px rgba(255, 255, 255, 0.2);
+
+      /* Animation Easings */
+      --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
+      --ease-elastic: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      --ease-bounce: cubic-bezier(0.68, -0.6, 0.32, 1.6);
+      
+      /* Mouse tracking variables */
+      --mouse-x: 50%;
+      --mouse-y: 50%;
+    }
+
+    /* ===== ANIMATED BACKGROUND ===== */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 15% 85%, rgba(255, 255, 255, 0.008) 0%, transparent 50%),
+        radial-gradient(circle at 85% 15%, rgba(255, 255, 255, 0.008) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.004) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+      animation: breathe 25s ease-in-out infinite;
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+      50% { transform: scale(1.05) rotate(0.5deg); opacity: 0.8; }
+    }
+
+    /* ===== MAGNETIC HOVER EFFECTS ===== */
+    .magnetic-card {
+      transition: all 0.3s var(--ease-out);
+    }
+
+    .magnetic-card:hover {
+      transform: perspective(1000px) rotateX(5deg) rotateY(5deg) translateZ(20px);
+    }
+
+    .magnetic-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.02) 0%, transparent 50%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      border-radius: inherit;
+    }
+
+    .magnetic-card:hover::after {
+      opacity: 1;
+    }
+
+    /* ===== COMPLEX BACKGROUND PATTERNS ===== */
+    .hex-bg::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(60deg, rgba(255,255,255,0.01) 1px, transparent 1px),
+        linear-gradient(-60deg, rgba(255,255,255,0.01) 1px, transparent 1px);
+      background-size: 100px 100px;
+      animation: hexFlow 50s linear infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes hexFlow {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(100px, 0); }
+    }
+
+    /* ===== RIPPLE EFFECT ===== */
+    .ripple-btn {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ripple-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.5);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .ripple-btn:active::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    /* ===== GRADIENT ANIMATIONS ===== */
+    @keyframes shimmer {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    .shimmer::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      animation: shimmer 2s infinite;
+    }
+
+    /* ===== SCROLL INDICATOR ===== */
+    .scroll-indicator {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 3px;
+      background: linear-gradient(90deg, #ffffff, rgba(255, 255, 255, 0.8));
+      z-index: 1001;
+      transition: width 0.3s ease;
+    }
+
+    /* ===== FADE IN ANIMATION ===== */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== MONOCHROME TIMELINE ===== */
+    .curriculum-timeline {
+      position: relative;
+    }
+    
+    /* Main timeline line - elegant gradient */
+    .curriculum-timeline::before {
+      content: '';
+      position: absolute;
+      left: 2rem;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, 
+        rgba(255, 255, 255, 0.6) 0%,
+        rgba(255, 255, 255, 0.3) 50%, 
+        rgba(255, 255, 255, 0.1) 100%);
+      border-radius: 2px;
+      z-index: 1;
+    }
+
+    .week-module {
+      position: relative;
+      padding-left: 4rem;
+    }
+    
+    
+    /* Progress indicator dots */
+    .progress-dot {
+      position: absolute;
+      left: 1.45rem;
+      top: 8rem;
+      width: 1.1rem;
+      height: 1.1rem;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      z-index: 3;
+      transition: all 0.3s ease;
+    }
+    
+    
+    .week-module:hover .progress-dot {
+      transform: scale(1.3);
+      background: #ffffff;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+    }
+    
+    /* Interactive content sections */
+    .content-section {
+      transition: all 0.3s ease;
+    }
+    
+    .section-toggle {
+      cursor: pointer;
+      transition: all 0.2s ease;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      margin: -0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .section-toggle:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .content-section.collapsed .content-body {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+    }
+    
+    .content-section.expanded .content-body {
+      max-height: 1000px;
+      opacity: 1;
+    }
+    
+    .content-body {
+      transition: all 0.5s ease;
+      max-height: 1000px;
+      opacity: 1;
+    }
+    
+    .toggle-icon {
+      transition: transform 0.3s ease;
+    }
+    
+    .section-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .section-toggle:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .toggle-icon {
+      transition: transform 0.3s ease;
+    }
+    
+    .content-section.collapsed .toggle-icon {
+      transform: rotate(-90deg);
+    }
+    
+    /* Meta cards for week information */
+    .meta-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      transition: all 0.2s ease;
+    }
+    
+    .meta-card:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    /* Difficulty indicators */
+    .difficulty-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .difficulty-dot.active {
+      background: #ffffff;
+      border-color: #ffffff;
+    }
+    
+    /* Navigation styles */
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .nav-btn:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .nav-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .quick-nav-btn {
+      padding: 0.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.25rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .quick-nav-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .quick-nav-item {
+      padding: 0.75rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .quick-nav-item:hover, .quick-nav-item.active {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    /* Progress animations */
+    .week-progress-item {
+      transition: all 0.3s ease;
+    }
+    
+    .week-progress-item.active .text-white {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    
+    /* Enhanced animations and micro-interactions */
+    @keyframes slideInFromLeft {
+      0% {
+        transform: translateX(-50px);
+        opacity: 0;
+      }
+      100% {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes fadeInUp {
+      0% {
+        transform: translateY(30px);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes progressFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    /* Enhanced hover effects */
+    .week-card {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .week-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+    
+    .meta-card {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .meta-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Staggered animations for content sections */
+    .content-section {
+      animation: fadeInUp 0.6s ease-out;
+      animation-fill-mode: both;
+    }
+    
+    .content-section:nth-child(1) { animation-delay: 0.1s; }
+    .content-section:nth-child(2) { animation-delay: 0.2s; }
+    .content-section:nth-child(3) { animation-delay: 0.3s; }
+    .content-section:nth-child(4) { animation-delay: 0.4s; }
+    
+    /* Progress bar animation */
+    #progress-bar {
+      background: linear-gradient(90deg, #ffffff, #e5e5e5, #ffffff);
+      background-size: 200% 100%;
+      animation: progressFlow 3s ease-in-out infinite;
+    }
+    
+    /* Enhanced button interactions */
+    .nav-btn, .quick-nav-btn {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .nav-btn::before, .quick-nav-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: left 0.5s;
+    }
+    
+    .nav-btn:hover::before, .quick-nav-btn:hover::before {
+      left: 100%;
+    }
+    
+    
+    /* Subtle parallax effect for timeline */
+    .curriculum-timeline::before {
+      animation: subtleFloat 4s ease-in-out infinite;
+    }
+    
+    /* Active week highlighting - removed for cleaner navigation */
+    .week-module.active-week {
+      /* No highlighting effects */
+    }
+    
+    .week-module.active-week .week-card,
+    .week-module.active-week > div {
+      /* No highlighting effects */
+    }
+    
+    @keyframes subtleFloat {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 0.9; }
+    }
+    
+    /* Week progress indicators */
+    .week-progress {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      display: flex;
+      gap: 0.25rem;
+    }
+    
+    .progress-step {
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+    }
+    
+    .progress-step.completed {
+      background: rgba(255, 255, 255, 0.8);
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+    }
+    
+    /* Week card hover effects */
+    .week-card {
+      transition: all 0.3s ease;
+      transform: translateZ(0);
+    }
+    
+    .week-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 40px rgba(255, 255, 255, 0.1);
+    }
+
+    /* ===== FUNNEL VISUALIZATION ===== */
+    .funnel-stage {
+      width: var(--stage-width, 100%);
+      transition: all 0.3s ease;
+    }
+
+    /* ===== ARCHITECTURE DIAGRAM ===== */
+    .architecture-diagram {
+      position: relative;
+    }
+
+    .arch-connector .connector-line {
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+      position: relative;
+    }
+
+    .arch-connector .connector-line::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: -3px;
+      width: 0;
+      height: 0;
+      border-left: 8px solid rgba(255, 255, 255, 0.2);
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+    }
+
+    /* ===== CUSTOM SCROLLBAR ===== */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+  </style>
+</head>
+
+<body class="bg-primary-bg text-text-primary font-primary leading-relaxed overflow-x-hidden">
+  <!-- Scroll Progress Indicator -->
+  <div class="scroll-indicator"></div>
+  
+  <!-- Navigation -->
+  <nav class="main-nav fixed top-0 w-full bg-black/95 backdrop-blur-sm z-50 py-4 border-b border-border-color opacity-0 translate-y-[-100%] transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-8">
+      <div class="flex justify-between items-center">
+        <a href="#unlearn-membership" class="text-lg font-bold text-text-primary hover:opacity-80 transition-opacity">
+          Unlearn Product
+        </a>
+        <div class="hidden md:flex space-x-8">
+          <a href="#unlearn-membership" class="nav-link flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary transition-colors">
+            <i data-lucide="home" class="w-4 h-4"></i>
+            Home
+          </a>
+          <a href="#course-hero" class="nav-link flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary transition-colors">
+            <i data-lucide="telescope" class="w-4 h-4"></i>
+            Overview
+          </a>
+          <a href="#built-for" class="nav-link flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary transition-colors">
+            <i data-lucide="target" class="w-4 h-4"></i>
+            Who It's For
+          </a>
+          <a href="#mentorship" class="nav-link flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary transition-colors">
+            <i data-lucide="users" class="w-4 h-4"></i>
+            Mentorship
+          </a>
+          <a href="#ai-products" class="nav-link flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary transition-colors">
+            <i data-lucide="cpu" class="w-4 h-4"></i>
+            AI Tools
+          </a>
+          <a href="#curriculum" class="nav-link flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary transition-colors">
+            <i data-lucide="graduation-cap" class="w-4 h-4"></i>
+            Curriculum
+          </a>
+          <a href="#transformation" class="nav-link flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary transition-colors">
+            <i data-lucide="trending-up" class="w-4 h-4"></i>
+            Transformation
+          </a>
+          <a href="#membership" class="nav-link flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary transition-colors">
+            <i data-lucide="crown" class="w-4 h-4"></i>
+            Membership
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== UNLEARN MEMBERSHIP ===== -->
+  <section id="unlearn-membership" class="min-h-screen flex items-center justify-center text-center relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-8 relative z-10">
+      <div class="inline-flex items-center gap-2 px-6 py-2 bg-card-bg border border-border-color rounded-full text-sm mb-8 shimmer relative overflow-hidden">
+        <i data-lucide="crown" class="w-4 h-4 text-white"></i>
+        Exclusive
+      </div>
+      <h1 class="font-display text-membership font-bold leading-tight mb-8">
+        Unlearn<br>Membership
+      </h1>
+      <p class="text-subhead mb-6 text-text-primary">
+        Product Management is dead. The Product Maker era has begun.
+      </p>
+      <p class="text-base text-text-secondary mb-12 max-w-2xl mx-auto">
+        An exclusive club limited to just 10 invited members every 2 months.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+        <a href="#" class="ripple-btn inline-flex items-center gap-3 px-8 py-4 bg-text-primary text-primary-bg font-semibold rounded-lg hover:transform hover:scale-105 hover:shadow-xl transition-all duration-300">
+          <span>Apply Now</span>
+          <i data-lucide="rocket" class="w-5 h-5"></i>
+        </a>
+        <a href="#curriculum" class="inline-flex items-center gap-3 px-8 py-4 bg-transparent text-text-primary border border-border-color rounded-lg hover:bg-card-bg hover:border-text-primary transition-all duration-300">
+          <span>Explore Curriculum</span>
+          <i data-lucide="book-open" class="w-5 h-5"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HERO ===== -->
+  <section id="course-hero" class="min-h-screen flex items-center justify-center text-center bg-secondary-bg relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-8 relative z-10">
+      <div class="inline-flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/20 text-white rounded-full text-sm mb-8">
+        <i data-lucide="radio" class="w-4 h-4"></i>
+        Live
+      </div>
+      <h1 class="font-display text-hero font-bold leading-tight mb-8">
+        8-Week Product Maker Cohort
+      </h1>
+      <p class="text-lg text-text-secondary max-w-4xl mx-auto mb-8 leading-relaxed">
+        Our flagship 8-week Product Maker Cohort is designed to help you build and launch a real-world product from scratch. Through first-principles thinking, rapid prototyping, user onboarding strategies, retention loops, and scalable distribution, you'll graduate with a high-quality proof of work.
+      </p>
+      <p class="text-xl font-semibold text-text-primary">
+        Starts from June 22
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== "THIS IS BUILT FOR" ===== -->
+  <section id="built-for" class="min-h-screen flex items-center py-24 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-8 relative z-10">
+      <h2 class="font-display text-title font-bold text-center mb-4">This is built with care for</h2>
+      <div class="w-16 h-0.5 bg-text-primary mx-auto mb-16"></div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Card 1 -->
+        <div class="magnetic-card relative bg-card-bg border border-border-color rounded-2xl p-8 hover:border-border-hover hover:shadow-lg transition-all duration-300 fade-in">
+          <h3 class="text-lg font-semibold mb-4 text-text-primary">Aspiring Product Makers</h3>
+          <p class="text-sm text-text-secondary leading-relaxed">
+            Beginners or junior professionals who want to learn how to take an idea and build a functional MVP in 8 weeks, mastering first-principles thinking and rapid prototyping.
+          </p>
+        </div>
+        <!-- Card 2 -->
+        <div class="magnetic-card relative bg-card-bg border border-border-color rounded-2xl p-8 hover:border-border-hover hover:shadow-lg transition-all duration-300 fade-in">
+          <h3 class="text-lg font-semibold mb-4 text-text-primary">Early-Stage Founders</h3>
+          <p class="text-sm text-text-secondary leading-relaxed">
+            Solo founders or co-founders looking to validate product-market fit, create a launch plan, and run growth experiments without a large engineering team.
+          </p>
+        </div>
+        <!-- Card 3 -->
+        <div class="magnetic-card relative bg-card-bg border border-border-color rounded-2xl p-8 hover:border-border-hover hover:shadow-lg transition-all duration-300 fade-in">
+          <h3 class="text-lg font-semibold mb-4 text-text-primary">Product Managers</h3>
+          <p class="text-sm text-text-secondary leading-relaxed">
+            Mid-level PMs aiming to upskill in hands-on prototyping, user research, and data-driven feature prioritization to drive product-led growth more effectively.
+          </p>
+        </div>
+        <!-- Card 4 -->
+        <div class="magnetic-card relative bg-card-bg border border-border-color rounded-2xl p-8 hover:border-border-hover hover:shadow-lg transition-all duration-300 fade-in">
+          <h3 class="text-lg font-semibold mb-4 text-text-primary">Startups & Teams</h3>
+          <p class="text-sm text-text-secondary leading-relaxed">
+            Small startup teams (2–10 people) that need a unified playbook for rapid ideation, user onboarding strategies, retention loops, and scalable analytics in a compact 8-week program.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ELITE MENTORSHIP SECTION ===== -->
+  <section id="mentorship" class="min-h-screen flex items-center py-24 bg-secondary-bg relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-8 relative z-10">
+      <h1 class="font-display text-title font-bold text-center mb-8">Elite Mentorship at Your Beck and Call</h1>
+      <p class="text-lg text-text-secondary text-center max-w-4xl mx-auto mb-16 leading-relaxed">
+        Unlike traditional programs where mentors are only available during scheduled sessions, Unlearn provides unprecedented access to world-class product leaders whenever you need them.
+      </p>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- 24/7 Support Card -->
+        <div class="magnetic-card relative bg-card-bg border border-border-color rounded-2xl p-8 fade-in">
+          <h2 class="text-xl font-semibold mb-6 text-text-primary">24/7 Support</h2>
+          <div class="space-y-4">
+            <div class="flex items-start gap-4">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="message-circle" class="w-5 h-5"></i>
+              </div>
+              <div class="text-sm text-text-secondary leading-relaxed">Private Discord channels with guaranteed response within 3 hours, any day of the week</div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="users" class="w-5 h-5"></i>
+              </div>
+              <div class="text-sm text-text-secondary leading-relaxed">Direct Access to our Program Directors with quick resolution to issues</div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="moon" class="w-5 h-5"></i>
+              </div>
+              <div class="text-sm text-text-secondary leading-relaxed">Late-night coding sessions with mentor support when you're in the flow</div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="calendar" class="w-5 h-5"></i>
+              </div>
+              <div class="text-sm text-text-secondary leading-relaxed">Weekend prototype reviews when inspiration strikes</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Structured Guidance Card -->
+        <div class="magnetic-card relative bg-card-bg border border-border-color rounded-2xl p-8 fade-in">
+          <h2 class="text-xl font-semibold mb-6 text-text-primary">Structured Guidance</h2>
+          <div class="space-y-4">
+            <div class="flex items-start gap-4">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="video" class="w-5 h-5"></i>
+              </div>
+              <div class="text-sm text-text-secondary leading-relaxed">Weekly 1:1 sessions with your assigned mentor (60 minutes)</div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="zap" class="w-5 h-5"></i>
+              </div>
+              <div class="text-sm text-text-secondary leading-relaxed">Emergency "Unblock Me" sessions available on-demand (30 minutes)</div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="clock" class="w-5 h-5"></i>
+              </div>
+              <div class="text-sm text-text-secondary leading-relaxed">Daily stand-up check-ins during building sprints</div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="presentation" class="w-5 h-5"></i>
+              </div>
+              <div class="text-sm text-text-secondary leading-relaxed">Unlimited presentation rehearsals before Demo Day</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Expert Network Card -->
+        <div class="magnetic-card relative bg-card-bg border border-border-color rounded-2xl p-8 fade-in">
+          <h2 class="text-xl font-semibold mb-6 text-text-primary">Expert Network</h2>
+          <div class="space-y-4">
+            <div class="flex items-start gap-4">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="brain" class="w-5 h-5"></i>
+              </div>
+              <div class="text-sm text-text-secondary leading-relaxed">Access to our entire roster of advisors with specialized expertise</div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="users-round" class="w-5 h-5"></i>
+              </div>
+              <div class="text-sm text-text-secondary leading-relaxed">Monthly roundtable sessions with all mentors</div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="handshake" class="w-5 h-5"></i>
+              </div>
+              <div class="text-sm text-text-secondary leading-relaxed">Direct introductions to industry leaders when you need specific insights</div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="infinity" class="w-5 h-5"></i>
+              </div>
+              <div class="text-sm text-text-secondary leading-relaxed">Post-program mentorship continuation options</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== AI PRODUCTS SECTION ===== -->
+  <section id="ai-products" class="min-h-screen flex items-center py-24 bg-primary-bg hex-bg relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-8 relative z-10">
+      <h1 class="font-display text-title font-bold text-center mb-16">Frontier AI Products Exclusive to Members</h1>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <!-- Palette AI Card -->
+        <div class="magnetic-card relative bg-card-bg border border-border-color rounded-2xl p-12 fade-in">
+          <h2 class="text-2xl font-bold mb-6 text-text-primary">Palette AI</h2>
+          <div class="text-base text-text-secondary mb-6 leading-relaxed">
+            Our frontier AI product that leaves ChatGPT and Claude in the dust when it comes to product thinking. Palette AI helps you research, ideate, and solve complex product problems with unprecedented speed and insight.
+          </div>
+          <div class="text-base text-text-secondary mb-6 leading-relaxed">
+            Trained on thousands of successful product launches and user research sessions, Palette AI doesn't just generate ideas—it thinks like a seasoned product leader with deep market understanding.
+          </div>
+          <div class="text-base text-text-secondary mb-8 leading-relaxed">
+            With Palette, you'll:
+          </div>
+          <div class="space-y-4">
+            <div class="flex items-start gap-4">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="lightbulb" class="w-5 h-5"></i>
+              </div>
+              <div class="text-sm text-text-secondary leading-relaxed">Generate product concepts that actually solve real problems</div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="search" class="w-5 h-5"></i>
+              </div>
+              <div class="text-sm text-text-secondary leading-relaxed">Identify hidden market opportunities others miss</div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="file-text" class="w-5 h-5"></i>
+              </div>
+              <div class="text-sm text-text-secondary leading-relaxed">Create detailed product specifications in minutes, not days</div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="check-circle" class="w-5 h-5"></i>
+              </div>
+              <div class="text-sm text-text-secondary leading-relaxed">Validate ideas with AI-simulated user feedback</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Surview AI Card -->
+        <div class="magnetic-card relative bg-card-bg border border-border-color rounded-2xl p-12 fade-in">
+          <h2 class="text-2xl font-bold mb-6 text-text-primary">Surview AI</h2>
+          <div class="text-base text-text-secondary mb-6 leading-relaxed">
+            Stop conducting terrible user interviews. Surview AI conducts qualitative research at scale, extracting insights that human researchers often miss while maintaining the depth and nuance of one-on-one conversations.
+          </div>
+          <div class="text-base text-text-secondary mb-8 leading-relaxed">
+            Surview simulates hundreds of user personas and conducts systematic interviews to uncover pain points, desires, and behavioral patterns across your entire target market in days, not months.
+          </div>
+          <div class="space-y-4">
+            <div class="flex items-start gap-4">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="mic" class="w-5 h-5"></i>
+              </div>
+              <div class="text-sm text-text-secondary leading-relaxed">Conduct 100+ user interviews in 24 hours</div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="eye" class="w-5 h-5"></i>
+              </div>
+              <div class="text-sm text-text-secondary leading-relaxed">Discover user needs you never thought to ask about</div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="user-round" class="w-5 h-5"></i>
+              </div>
+              <div class="text-sm text-text-secondary leading-relaxed">Generate personas backed by qualitative data</div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="shield-check" class="w-5 h-5"></i>
+              </div>
+              <div class="text-sm text-text-secondary leading-relaxed">Validate assumptions before building anything</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CURRICULUM SECTION ===== -->
+  <section id="curriculum" class="py-24 bg-secondary-bg relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-8 relative z-10">
+      <h1 class="font-display text-title font-bold text-center mb-8">8-Week Product Maker Curriculum</h1>
+      <p class="text-lg text-text-secondary text-center max-w-4xl mx-auto mb-12 leading-relaxed">
+        A comprehensive journey from idea to launch, combining first-principles thinking with AI-powered tools and hands-on mentorship to build real products that solve real problems.
+      </p>
+
+      <!-- Overall Progress Tracking System -->
+      <div class="curriculum-progress-container mb-16">
+        <div class="bg-white/5 border border-white/20 rounded-2xl p-8 backdrop-blur-sm">
+          <!-- Progress Header -->
+          <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center gap-3">
+              <i data-lucide="trending-up" class="w-6 h-6 text-white"></i>
+              <h3 class="text-xl font-bold text-white">Curriculum Progress</h3>
+            </div>
+            <div class="text-right">
+              <div class="text-2xl font-bold text-white" id="overall-progress">0%</div>
+              <div class="text-sm text-text-secondary">Complete</div>
+            </div>
+          </div>
+          
+          <!-- Overall Progress Bar -->
+          <div class="mb-6">
+            <div class="flex justify-between text-sm text-text-secondary mb-2">
+              <span>Week 0: Foundation</span>
+              <span>Week 8: Launch</span>
+            </div>
+            <div class="w-full bg-white/10 rounded-full h-2 border border-white/20">
+              <div class="bg-gradient-to-r from-white to-gray-300 h-2 rounded-full transition-all duration-500" style="width: 0%" id="progress-bar"></div>
+            </div>
+          </div>
+          
+          <!-- Week Progress Indicators -->
+          <div class="grid grid-cols-9 gap-2">
+            <div class="week-progress-item active" data-week="0">
+              <div class="w-8 h-8 rounded-full bg-white text-black text-xs font-bold flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">0</div>
+              <div class="text-xs text-center mt-1 text-white">Setup</div>
+            </div>
+            <div class="week-progress-item" data-week="1">
+              <div class="w-8 h-8 rounded-full bg-white/20 border border-white/40 text-white text-xs font-bold flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">1</div>
+              <div class="text-xs text-center mt-1 text-text-secondary">Think</div>
+            </div>
+            <div class="week-progress-item" data-week="2">
+              <div class="w-8 h-8 rounded-full bg-white/20 border border-white/40 text-white text-xs font-bold flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">2</div>
+              <div class="text-xs text-center mt-1 text-text-secondary">Research</div>
+            </div>
+            <div class="week-progress-item" data-week="3">
+              <div class="w-8 h-8 rounded-full bg-white/20 border border-white/40 text-white text-xs font-bold flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">3</div>
+              <div class="text-xs text-center mt-1 text-text-secondary">Design</div>
+            </div>
+            <div class="week-progress-item" data-week="4">
+              <div class="w-8 h-8 rounded-full bg-white/20 border border-white/40 text-white text-xs font-bold flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">4</div>
+              <div class="text-xs text-center mt-1 text-text-secondary">Validate</div>
+            </div>
+            <div class="week-progress-item" data-week="5">
+              <div class="w-8 h-8 rounded-full bg-white/20 border border-white/40 text-white text-xs font-bold flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">5</div>
+              <div class="text-xs text-center mt-1 text-text-secondary">Plan</div>
+            </div>
+            <div class="week-progress-item" data-week="6">
+              <div class="w-8 h-8 rounded-full bg-white/20 border border-white/40 text-white text-xs font-bold flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">6</div>
+              <div class="text-xs text-center mt-1 text-text-secondary">Build</div>
+            </div>
+            <div class="week-progress-item" data-week="7">
+              <div class="w-8 h-8 rounded-full bg-white/20 border border-white/40 text-white text-xs font-bold flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">7</div>
+              <div class="text-xs text-center mt-1 text-text-secondary">Test</div>
+            </div>
+            <div class="week-progress-item" data-week="8">
+              <div class="w-8 h-8 rounded-full bg-white/20 border border-white/40 text-white text-xs font-bold flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">8</div>
+              <div class="text-xs text-center mt-1 text-text-secondary">Launch</div>
+            </div>
+          </div>
+          
+          <!-- Quick Stats -->
+          <div class="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-white/20">
+            <div class="text-center">
+              <div class="text-lg font-bold text-white">50h</div>
+              <div class="text-xs text-text-secondary">Est. Time Left</div>
+            </div>
+            <div class="text-center">
+              <div class="text-lg font-bold text-white">0</div>
+              <div class="text-xs text-text-secondary">Sessions Completed</div>
+            </div>
+            <div class="text-center">
+              <div class="text-lg font-bold text-white">Next</div>
+              <div class="text-xs text-text-secondary">Week 1: First Principles</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Enhanced Navigation -->
+      <div class="curriculum-navigation mb-8">
+        <div class="flex items-center justify-between bg-white/5 border border-white/20 rounded-xl p-4">
+          <button class="nav-btn prev-week" onclick="navigateWeek('prev')" disabled>
+            <i data-lucide="chevron-left" class="w-4 h-4 text-white"></i>
+            <span class="text-white text-sm">Previous</span>
+          </button>
+          
+          <div class="flex items-center gap-4">
+            <div class="text-center">
+              <div class="text-sm text-text-secondary">Currently Viewing</div>
+              <div class="text-white font-semibold" id="current-week">Week 0: Foundation</div>
+            </div>
+            
+            <button class="quick-nav-btn" onclick="toggleQuickNav()">
+              <i data-lucide="menu" class="w-4 h-4 text-white"></i>
+            </button>
+          </div>
+          
+          <button class="nav-btn next-week" onclick="navigateWeek('next')">
+            <span class="text-white text-sm">Next</span>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-white"></i>
+          </button>
+        </div>
+        
+        <!-- Quick Navigation Dropdown -->
+        <div id="quick-nav-dropdown" class="hidden absolute z-50 mt-2 bg-black/90 border border-white/20 rounded-xl p-4 backdrop-blur-sm">
+          <div class="grid grid-cols-3 gap-2 w-80">
+            <div class="quick-nav-item active" data-week="0" onclick="jumpToWeek(0)">
+              <div class="text-white font-medium">Week 0</div>
+              <div class="text-xs text-text-secondary">Foundation</div>
+            </div>
+            <div class="quick-nav-item" data-week="1" onclick="jumpToWeek(1)">
+              <div class="text-white font-medium">Week 1</div>
+              <div class="text-xs text-text-secondary">First Principles</div>
+            </div>
+            <div class="quick-nav-item" data-week="2" onclick="jumpToWeek(2)">
+              <div class="text-white font-medium">Week 2</div>
+              <div class="text-xs text-text-secondary">Market Research</div>
+            </div>
+            <div class="quick-nav-item" data-week="3" onclick="jumpToWeek(3)">
+              <div class="text-white font-medium">Week 3</div>
+              <div class="text-xs text-text-secondary">Product Design</div>
+            </div>
+            <div class="quick-nav-item" data-week="4" onclick="jumpToWeek(4)">
+              <div class="text-white font-medium">Week 4</div>
+              <div class="text-xs text-text-secondary">User Testing</div>
+            </div>
+            <div class="quick-nav-item" data-week="5" onclick="jumpToWeek(5)">
+              <div class="text-white font-medium">Week 5</div>
+              <div class="text-xs text-text-secondary">Technical Plan</div>
+            </div>
+            <div class="quick-nav-item" data-week="6" onclick="jumpToWeek(6)">
+              <div class="text-white font-medium">Week 6</div>
+              <div class="text-xs text-text-secondary">MVP Build</div>
+            </div>
+            <div class="quick-nav-item" data-week="7" onclick="jumpToWeek(7)">
+              <div class="text-white font-medium">Week 7</div>
+              <div class="text-xs text-text-secondary">Launch Prep</div>
+            </div>
+            <div class="quick-nav-item" data-week="8" onclick="jumpToWeek(8)">
+              <div class="text-white font-medium">Week 8</div>
+              <div class="text-xs text-text-secondary">Go Live</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timeline Container -->
+      <div class="curriculum-timeline relative">
+        <!-- Week 0 -->
+      <div class="week-module week-0 mb-16 fade-in" data-week="0">
+        <!-- Progress Dot -->
+        <div class="progress-dot"></div>
+        
+        <div class="week-card bg-card-bg border border-border-color rounded-2xl p-8 relative">
+          <!-- Week Progress Indicators -->
+          <div class="week-progress">
+            <div class="progress-step completed"></div>
+            <div class="progress-step"></div>
+            <div class="progress-step"></div>
+            <div class="progress-step"></div>
+            <div class="progress-step"></div>
+          </div>
+          
+          <div class="flex items-center gap-4 mb-6">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-2">
+                <i data-lucide="users" class="w-5 h-5 text-white"></i>
+                <span class="text-sm font-semibold text-text-secondary uppercase tracking-wider">WEEK 0</span>
+              </div>
+              <div class="ml-auto">
+                <span class="px-3 py-1 bg-white/10 text-white text-xs rounded-full border border-white/20">FOUNDATION</span>
+              </div>
+            </div>
+          </div>
+          <h2 class="text-2xl font-bold mb-4 text-text-primary">INDUCTION & COMMUNITY ACCESS</h2>
+          <p class="text-lg text-text-secondary mb-6">Welcome to the Inner Circle</p>
+          
+          <!-- Week Meta Information -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div class="meta-card">
+              <div class="flex items-center gap-2 mb-2">
+                <i data-lucide="clock" class="w-4 h-4 text-white"></i>
+                <span class="text-xs font-medium text-white uppercase tracking-wider">Duration</span>
+              </div>
+              <div class="text-lg font-bold text-white">1 Hour</div>
+              <div class="text-xs text-text-secondary">1 session</div>
+            </div>
+            
+            <div class="meta-card">
+              <div class="flex items-center gap-2 mb-2">
+                <i data-lucide="bar-chart" class="w-4 h-4 text-white"></i>
+                <span class="text-xs font-medium text-white uppercase tracking-wider">Difficulty</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <div class="difficulty-dot active"></div>
+                <div class="difficulty-dot"></div>
+                <div class="difficulty-dot"></div>
+                <div class="difficulty-dot"></div>
+                <div class="difficulty-dot"></div>
+              </div>
+              <div class="text-xs text-text-secondary">Beginner</div>
+            </div>
+            
+            <div class="meta-card">
+              <div class="flex items-center gap-2 mb-2">
+                <i data-lucide="check-circle" class="w-4 h-4 text-white"></i>
+                <span class="text-xs font-medium text-white uppercase tracking-wider">Prerequisites</span>
+              </div>
+              <div class="text-lg font-bold text-white">None</div>
+              <div class="text-xs text-text-secondary">Fresh start</div>
+            </div>
+            
+            <div class="meta-card">
+              <div class="flex items-center gap-2 mb-2">
+                <i data-lucide="users" class="w-4 h-4 text-white"></i>
+                <span class="text-xs font-medium text-white uppercase tracking-wider">Learning Path</span>
+              </div>
+              <div class="text-lg font-bold text-white">Foundation</div>
+              <div class="text-xs text-text-secondary">Community & Setup</div>
+            </div>
+          </div>
+          
+          <!-- Week Objectives Section -->
+          <div class="bg-white/3 border border-white/5 rounded-lg p-6 mb-6">
+            <div class="flex items-center gap-3 mb-4">
+              <i data-lucide="target" class="w-5 h-5 text-text-secondary"></i>
+              <h3 class="text-lg font-semibold text-text-primary">Week Objectives</h3>
+              <span class="px-2 py-1 bg-white/5 text-text-secondary text-xs rounded border border-white/10">5 GOALS</span>
+            </div>
+            <ul class="space-y-3 text-sm text-text-secondary">
+              <li class="flex items-start gap-3 p-3 bg-white/2 rounded-lg border border-white/5">
+                <i data-lucide="user-check" class="w-4 h-4 text-text-secondary mt-0.5 flex-shrink-0"></i>
+                Meet your cohort members and instructors in private 1:1 sessions
+              </li>
+              <li class="flex items-start gap-3 p-3 bg-white/2 rounded-lg border border-white/5">
+                <i data-lucide="users" class="w-4 h-4 text-text-secondary mt-0.5 flex-shrink-0"></i>
+                Join one of our 2 elite teams (5 members each) with a dedicated mentor
+              </li>
+              <li class="flex items-start gap-3 p-3 bg-white/2 rounded-lg border border-white/5">
+                <i data-lucide="message-circle" class="w-4 h-4 text-text-secondary mt-0.5 flex-shrink-0"></i>
+                Gain exclusive access to our private Discord community and Disco learning platform
+              </li>
+              <li class="flex items-start gap-3 p-3 bg-white/2 rounded-lg border border-white/5">
+                <i data-lucide="cpu" class="w-4 h-4 text-text-secondary mt-0.5 flex-shrink-0"></i>
+                Get set up with our proprietary tools: Palette and Surview AI
+              </li>
+              <li class="flex items-start gap-3 p-3 bg-white/2 rounded-lg border border-white/5">
+                <i data-lucide="wrench" class="w-4 h-4 text-text-secondary mt-0.5 flex-shrink-0"></i>
+                Access our curated Product Maker toolkit: Cursor, Windsurf, Bolt, Lovable, NotebookLM, Mixpanel, Julius AI
+              </li>
+            </ul>
+          </div>
+
+          <!-- Assignments and Challenge Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <!-- Assignments Section -->
+            <div class="bg-white/3 border border-white/5 rounded-lg p-6">
+              <div class="flex items-center gap-3 mb-4">
+                <i data-lucide="clipboard-check" class="w-5 h-5 text-text-secondary"></i>
+                <h3 class="text-lg font-semibold text-text-primary">Detailed Assignments</h3>
+                <span class="px-2 py-1 bg-white/5 text-text-secondary text-xs rounded border border-white/10">4 TASKS</span>
+              </div>
+              <ul class="space-y-3 text-sm text-text-secondary">
+                <li class="flex items-start gap-3 p-3 bg-white/2 rounded-lg border border-white/5 hover:bg-white/4 transition-all duration-200">
+                  <div class="text-text-secondary flex-shrink-0 mt-1">
+                    <i data-lucide="user" class="w-4 h-4"></i>
+                  </div>
+                  <div>
+                    <div class="text-text-primary font-medium mb-1">Personal Product Maker Assessment</div>
+                    <div class="text-text-secondary text-xs">Complete profile assessment to identify strengths and growth areas</div>
+                  </div>
+                </li>
+                <li class="flex items-start gap-3 p-3 bg-white/2 rounded-lg border border-white/5 hover:bg-white/4 transition-all duration-200">
+                  <div class="text-text-secondary flex-shrink-0 mt-1">
+                    <i data-lucide="settings" class="w-4 h-4"></i>
+                  </div>
+                  <div>
+                    <div class="text-text-primary font-medium mb-1">Tools Setup & Configuration</div>
+                    <div class="text-text-secondary text-xs">Install and configure all required tools with guided mentor setup</div>
+                  </div>
+                </li>
+                <li class="flex items-start gap-3 p-3 bg-white/2 rounded-lg border border-white/5 hover:bg-white/4 transition-all duration-200">
+                  <div class="text-text-secondary flex-shrink-0 mt-1">
+                    <i data-lucide="video" class="w-4 h-4"></i>
+                  </div>
+                  <div>
+                    <div class="text-text-primary font-medium mb-1">Introduction Video Recording</div>
+                    <div class="text-text-secondary text-xs">Record 2-minute intro highlighting background and goals for cohort</div>
+                  </div>
+                </li>
+                <li class="flex items-start gap-3 p-3 bg-white/2 rounded-lg border border-white/5 hover:bg-white/4 transition-all duration-200">
+                  <div class="text-text-secondary flex-shrink-0 mt-1">
+                    <i data-lucide="calendar" class="w-4 h-4"></i>
+                  </div>
+                  <div>
+                    <div class="text-text-primary font-medium mb-1">Session Scheduling</div>
+                    <div class="text-text-secondary text-xs">Schedule all 1:1 sessions for program duration to ensure mentor availability</div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <!-- The Onboarding Challenge Section -->
+            <div class="bg-white/3 border border-white/5 rounded-lg p-6">
+              <div class="flex items-center gap-3 mb-4">
+                <i data-lucide="target" class="w-5 h-5 text-text-secondary"></i>
+                <h3 class="text-lg font-semibold text-text-primary">The Onboarding Challenge</h3>
+                <span class="px-2 py-1 bg-white/5 text-text-secondary text-xs rounded border border-white/10">CORE FOCUS</span>
+              </div>
+              <div class="space-y-4">
+                <div>
+                  <span class="text-text-primary font-semibold">Focus Question:</span>
+                  <p class="text-text-secondary mt-2 text-sm">How might we create an onboarding experience that builds community while assessing skills?</p>
+                </div>
+                <div class="border-t border-white/5 pt-4">
+                  <span class="text-text-primary font-semibold">Challenge Description:</span>
+                  <p class="text-text-secondary mt-2 text-sm">
+                    You'll analyze how leading products onboard users, identify friction points, and design a seamless experience that collects critical information while creating immediate value.
+                  </p>
+                </div>
+                <div class="border-t border-white/5 pt-4">
+                  <span class="text-text-primary font-semibold">Key Deliverables:</span>
+                  <ul class="space-y-2 mt-2 text-text-secondary text-sm">
+                    <li class="flex items-center gap-2">
+                      <i data-lucide="check" class="w-3 h-3 text-text-secondary"></i>
+                      Onboarding flow analysis of 3 leading products
+                    </li>
+                    <li class="flex items-center gap-2">
+                      <i data-lucide="check" class="w-3 h-3 text-text-secondary"></i>
+                      Friction point identification and solutions
+                    </li>
+                    <li class="flex items-center gap-2">
+                      <i data-lucide="check" class="w-3 h-3 text-text-secondary"></i>
+                      Community-building strategy design
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mentorship Touchpoints Section -->
+          <div class="bg-white/3 border border-white/5 rounded-lg p-6">
+            <div class="flex items-center gap-3 mb-4">
+              <i data-lucide="users" class="w-5 h-5 text-text-secondary"></i>
+              <h3 class="text-lg font-semibold text-text-primary">Mentorship Touchpoints</h3>
+              <span class="px-2 py-1 bg-white/5 text-text-secondary text-xs rounded border border-white/10">4 SESSIONS</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div class="flex items-start gap-3 p-3 bg-white/2 rounded-lg border border-white/5 hover:bg-white/4 transition-all duration-200">
+                <div class="text-text-secondary flex-shrink-0 mt-1">
+                  <i data-lucide="user-check" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <div class="text-text-primary font-medium mb-1 text-sm">Initial 1:1 Mentor Matching Session</div>
+                  <div class="text-text-secondary text-xs">90-minute session to align goals and expectations</div>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 p-3 bg-white/2 rounded-lg border border-white/5 hover:bg-white/4 transition-all duration-200">
+                <div class="text-text-secondary flex-shrink-0 mt-1">
+                  <i data-lucide="users" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <div class="text-text-primary font-medium mb-1 text-sm">Team Formation Strategy Session</div>
+                  <div class="text-text-secondary text-xs">Ensure complementary skills and working dynamics</div>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 p-3 bg-white/2 rounded-lg border border-white/5 hover:bg-white/4 transition-all duration-200">
+                <div class="text-text-secondary flex-shrink-0 mt-1">
+                  <i data-lucide="monitor" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <div class="text-text-primary font-medium mb-1 text-sm">Tools Setup Support</div>
+                  <div class="text-text-secondary text-xs">Screen sharing session with technical experts</div>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 p-3 bg-white/2 rounded-lg border border-white/5 hover:bg-white/4 transition-all duration-200">
+                <div class="text-text-secondary flex-shrink-0 mt-1">
+                  <i data-lucide="message-circle" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <div class="text-text-primary font-medium mb-1 text-sm">24/7 Discord Access</div>
+                  <div class="text-text-secondary text-xs">Continuous support for any questions or concerns</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Week 1 -->
+      <div class="week-module week-1 mb-16 fade-in" data-week="1">
+        <!-- Progress Dot -->
+        <div class="progress-dot"></div>
+        
+        <div class="bg-card-bg border border-border-color rounded-2xl p-8 relative hover:border-border-hover transition-all duration-300">
+          <div class="flex items-center gap-4 mb-6">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-2">
+                <i data-lucide="lightbulb" class="w-5 h-5 text-white"></i>
+                <span class="text-sm font-semibold text-text-secondary uppercase tracking-wider">WEEK 1</span>
+              </div>
+              <div class="ml-auto">
+                <span class="px-3 py-1 bg-white/10 text-white border border-white/20 text-xs rounded-full">MINDSET</span>
+              </div>
+            </div>
+          </div>
+          <h2 class="text-2xl font-bold mb-4 text-text-primary">FIRST PRINCIPLES THINKING</h2>
+          <p class="text-lg text-text-secondary mb-8">Seeing What Others Miss</p>
+          
+          <div class="space-y-8">
+            <!-- Week Objectives -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Week Objectives</h3>
+              <ul class="space-y-3 text-sm text-text-secondary">
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  The paradigm shift: Product Managers coordinate teams. Product Makers build the future themselves.
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  First principles thinking: Break problems down to their core when others stay on the surface
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  Identify hidden assumptions that limit conventional thinkers
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  Find root causes where others only see symptoms
+                </li>
+              </ul>
+            </div>
+
+            <!-- Real Example -->
+            <div class="bg-card-hover border border-border-color rounded-lg p-6">
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Real Example: Food Delivery App</h3>
+              <div class="space-y-3 text-sm text-text-secondary">
+                <p><strong>Traditional PMs:</strong> "Let's optimize driver routes to deliver food faster."</p>
+                <p><strong>Product Makers:</strong> Using Palette AI to analyze the entire system, you discover the real bottleneck is restaurant capacity during peak hours. By implementing a predictive kitchen load balancing system, you reduce delivery times by 37% without changing a single driver route.</p>
+              </div>
+            </div>
+
+            <!-- Assignments -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Detailed Assignments</h3>
+              <ul class="space-y-3 text-sm text-text-secondary">
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  Deconstruct a popular product to its first principles (written analysis of 1500+ words)
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  Identify 10 hidden assumptions in your current product thinking and create counter-arguments for each
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  Create a root cause analysis for a failed product using the 5 Whys methodology
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  Build a first principles map for your initial product concept, identifying at least 3 non-obvious insights
+                </li>
+              </ul>
+            </div>
+
+            <!-- Tools -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Tools You'll Master</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="magnetic-card relative bg-card-hover border border-border-color rounded-lg p-6">
+                  <div class="w-12 h-12 bg-accent-soft rounded-full flex items-center justify-center text-xl font-bold mb-4 mx-auto">P</div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">PALETTE AI</h4>
+                  <p class="text-xs text-text-secondary">For research and problem exploration, with specific prompts for first principles analysis</p>
+                </div>
+                <div class="magnetic-card relative bg-card-hover border border-border-color rounded-lg p-6">
+                  <div class="w-12 h-12 bg-accent-soft rounded-full flex items-center justify-center text-xl font-bold mb-4 mx-auto">N</div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">NOTEBOOKLM</h4>
+                  <p class="text-xs text-text-secondary">For organizing your product thinking and creating interconnected knowledge graphs</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mentorship Touchpoints -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Mentorship Touchpoints</h3>
+              <ul class="space-y-3 text-sm text-text-secondary">
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="star" class="w-4 h-4"></i>
+                  </div>
+                  Mid-week check-in to review first principles mapping and provide course corrections
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="star" class="w-4 h-4"></i>
+                  </div>
+                  On-demand support for assumption identification (available within 3 hours of request)
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="star" class="w-4 h-4"></i>
+                  </div>
+                  End-of-week feedback session on root cause analysis with detailed improvement suggestions
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Week 2 -->
+      <div class="week-module week-2 mb-16 fade-in" data-week="2">
+        <!-- Progress Dot -->
+        <div class="progress-dot"></div>
+        
+        <div class="bg-card-bg border border-border-color rounded-2xl p-8 relative hover:border-border-hover transition-all duration-300">
+          <div class="flex items-center gap-4 mb-6">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-2">
+                <i data-lucide="search" class="w-5 h-5 text-white"></i>
+                <span class="text-sm font-semibold text-text-secondary uppercase tracking-wider">WEEK 2</span>
+              </div>
+              <div class="ml-auto">
+                <span class="px-3 py-1 bg-white/10 text-white border border-white/20 text-xs rounded-full">RESEARCH</span>
+              </div>
+            </div>
+          </div>
+          <h2 class="text-2xl font-bold mb-4 text-text-primary">AI-POWERED USER RESEARCH</h2>
+          <p class="text-lg text-text-secondary mb-8">10× Faster, 100× Deeper User Insights with Surview & Palette AI</p>
+          
+          <div class="space-y-8">
+            <!-- Week Objectives -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Week Objectives</h3>
+              <ul class="space-y-3 text-sm text-text-secondary">
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  Conduct user research amplified by AI agents—Surview AI for autonomous interviews and Palette AI for drafting personas
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  Master qualitative research fundamentals while leveraging AI to accelerate deep user insights
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  Replace gut feelings with data-driven decisions grounded in real user voices
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  Balance human empathy with AI's scale to ensure authentic product decisions
+                </li>
+              </ul>
+            </div>
+
+            <!-- Research Revolution -->
+            <div class="bg-card-hover border border-border-color rounded-lg p-6">
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">The Research Revolution</h3>
+              <div class="space-y-3 text-sm text-text-secondary">
+                <p><strong>Traditional Way:</strong> Spend weeks scheduling interviews, transcribing, and analyzing manually.</p>
+                <p><strong>Product Maker Way:</strong> Use Surview to conduct 50+ user interviews in hours, automatically identify patterns, and generate actionable insights. Then use Palette AI to transform these insights into detailed personas and product requirements—all in a single day.</p>
+              </div>
+            </div>
+
+            <!-- Assignments -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Detailed Assignments</h3>
+              <ul class="space-y-3 text-sm text-text-secondary">
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  AI-Led User Interviews: Use Surview to conduct ≥5 simulated interviews for your product idea's audience
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  Persona Generation with Palette AI: Create two detailed user personas including background, goals, frustrations
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  User Journey Mapping: Outline a complete user journey map based on one persona
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  Research-to-Requirements Brief: Write a one-page product requirements draft tracing each requirement to specific user insights
+                </li>
+              </ul>
+            </div>
+
+            <!-- Real-World Examples -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Real-World Impact Examples</h3>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-card-hover border border-border-color rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">Airbnb's Trust Revolution</h4>
+                  <p class="text-xs text-text-secondary">Extensive user interviews revealed trust as the #1 barrier. This led to verified profiles, dual-sided reviews, and professional photography—features that 10x'd bookings.</p>
+                </div>
+                <div class="bg-card-hover border border-border-color rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">Notion's Customer-Driven Pivot</h4>
+                  <p class="text-xs text-text-secondary">Founders spent days talking with non-technical users, leading to a complete redesign in 2017 that transformed them into a billion-dollar company.</p>
+                </div>
+                <div class="bg-card-hover border border-border-color rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">Superhuman's PMF Engine</h4>
+                  <p class="text-xs text-text-secondary">Rahul Vohra's targeted user surveys pinpointed missing features that fueled viral adoption.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tools -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Tools You'll Master</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="magnetic-card relative bg-card-hover border border-border-color rounded-lg p-6">
+                  <div class="w-12 h-12 bg-accent-soft rounded-full flex items-center justify-center text-xl font-bold mb-4 mx-auto">S</div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">SURVIEW AI</h4>
+                  <p class="text-xs text-text-secondary">Autonomous user interview agent that conducts research at scale, identifies patterns, and generates insight decks</p>
+                </div>
+                <div class="magnetic-card relative bg-card-hover border border-border-color rounded-lg p-6">
+                  <div class="w-12 h-12 bg-accent-soft rounded-full flex items-center justify-center text-xl font-bold mb-4 mx-auto">P</div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">PALETTE AI</h4>
+                  <p class="text-xs text-text-secondary">Transform Surview insights into detailed personas, user stories, and product requirements</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Deliverables -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Deliverables & Outcomes</h3>
+              <ul class="space-y-3 text-sm text-text-secondary">
+                <li><strong>User Research Report:</strong> Professional-grade insight deck with Surview transcripts, persona profiles, and key pain points</li>
+                <li><strong>Persona & Journey Documentation:</strong> Clear user narratives that translate raw research into actionable insights</li>
+                <li><strong>AI Tool Proficiency:</strong> Demonstrated mastery of Surview and Palette AI for conducting AI-assisted user research</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Week 3 -->
+      <div class="week-module week-3 mb-16 fade-in" data-week="3">
+        <!-- Progress Dot -->
+        <div class="progress-dot"></div>
+        
+        <div class="bg-card-bg border border-border-color rounded-2xl p-8 relative hover:border-border-hover transition-all duration-300">
+          <div class="flex items-center gap-4 mb-6">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-2">
+                <i data-lucide="palette" class="w-5 h-5 text-white"></i>
+                <span class="text-sm font-semibold text-text-secondary uppercase tracking-wider">WEEK 3</span>
+              </div>
+              <div class="ml-auto">
+                <span class="px-3 py-1 bg-white/10 text-white border border-white/20 text-xs rounded-full">DESIGN</span>
+              </div>
+            </div>
+          </div>
+          <h2 class="text-2xl font-bold mb-4 text-text-primary">PRODUCT DESIGN WITH AI</h2>
+          <p class="text-lg text-text-secondary mb-8">From Research to Delightful Prototypes with Windsurf & Lovable</p>
+          
+          <div class="space-y-8">
+            <!-- Week Objectives -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Week Objectives</h3>
+              <ul class="space-y-3 text-sm text-text-secondary">
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  Transform research insights into user flows, wireframes, and functional prototypes using AI
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  Master UX principles: clarity, simplicity, and delight without needing a dedicated designer
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  Build clickable mockups with Windsurf (AI coding) and enhance them with Lovable (AI UX)
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  Learn the design–feedback–refine iteration loop for rapid product development
+                </li>
+              </ul>
+            </div>
+
+            <!-- Design Sprint -->
+            <div class="bg-card-hover border border-border-color rounded-lg p-6">
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Design Sprint Transformation</h3>
+              <div class="space-y-3 text-sm text-text-secondary">
+                <p><strong>Traditional Way:</strong> Weeks of back-and-forth between designers and developers.</p>
+                <p><strong>Product Maker Way:</strong> Sketch your idea on paper, describe it to Windsurf in plain English, and watch it generate a functioning React prototype in minutes. Then use Lovable to add those delightful touches that make users fall in love with your product.</p>
+              </div>
+            </div>
+
+            <!-- Your Design Workflow -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Your Design Workflow</h3>
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="text-center p-4 bg-card-hover border border-border-color rounded-lg">
+                  <div class="text-white mb-2 flex justify-center">
+                    <i data-lucide="pencil" class="w-8 h-8"></i>
+                  </div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-1">Sketch & Flow</h4>
+                  <p class="text-xs text-text-secondary">Paper sketches and user flow diagrams</p>
+                </div>
+                <div class="text-center p-4 bg-card-hover border border-border-color rounded-lg">
+                  <div class="text-white mb-2 flex justify-center">
+                    <i data-lucide="layout-grid" class="w-8 h-8"></i>
+                  </div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-1">Wireframe</h4>
+                  <p class="text-xs text-text-secondary">Low-fi digital wireframes in Figma</p>
+                </div>
+                <div class="text-center p-4 bg-card-hover border border-border-color rounded-lg">
+                  <div class="text-white mb-2 flex justify-center">
+                    <i data-lucide="bot" class="w-8 h-8"></i>
+                  </div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-1">AI Prototype</h4>
+                  <p class="text-xs text-text-secondary">Windsurf converts to functional code</p>
+                </div>
+                <div class="text-center p-4 bg-card-hover border border-border-color rounded-lg">
+                  <div class="text-white mb-2 flex justify-center">
+                    <i data-lucide="sparkles" class="w-8 h-8"></i>
+                  </div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-1">Delight</h4>
+                  <p class="text-xs text-text-secondary">Lovable adds UX magic</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Assignments -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Detailed Assignments</h3>
+              <ul class="space-y-3 text-sm text-text-secondary">
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  User Flow Diagram: Map a core task flow (e.g., user onboarding) using FigJam or draw.io
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  Wireframe Sprint: Create wireframes for 3 key screens, then use Windsurf to convert one into a functioning prototype
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  Lovability Audit: Run your prototype through Lovable and implement at least one UX improvement
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  Usability Test & Iterate: Conduct 5-minute tests, identify issues, and implement fixes
+                </li>
+              </ul>
+            </div>
+
+            <!-- Tools -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Tools You'll Master</h3>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="magnetic-card relative bg-card-hover border border-border-color rounded-lg p-6">
+                  <div class="w-12 h-12 bg-accent-soft rounded-full flex items-center justify-center text-xl font-bold mb-4 mx-auto">W</div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">WINDSURF</h4>
+                  <p class="text-xs text-text-secondary">AI coding assistant that turns natural language into React/HTML prototypes</p>
+                </div>
+                <div class="magnetic-card relative bg-card-hover border border-border-color rounded-lg p-6">
+                  <div class="w-12 h-12 bg-accent-soft rounded-full flex items-center justify-center text-xl font-bold mb-4 mx-auto">L</div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">LOVABLE</h4>
+                  <p class="text-xs text-text-secondary">AI design assistant for UI/UX improvements, microcopy, animations</p>
+                </div>
+                <div class="magnetic-card relative bg-card-hover border border-border-color rounded-lg p-6">
+                  <div class="w-12 h-12 bg-accent-soft rounded-full flex items-center justify-center text-xl font-bold mb-4 mx-auto">F</div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">FIGMA</h4>
+                  <p class="text-xs text-text-secondary">Industry-standard design tool for wireframing before AI conversion</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Portfolio-Ready Deliverables -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Portfolio-Ready Deliverables</h3>
+              <ul class="space-y-3 text-sm text-text-secondary">
+                <li><strong>Interactive Prototype:</strong> A functional, AI-powered prototype of your core screens ready for user testing</li>
+                <li><strong>UI/UX Design Artifacts:</strong> Complete user flows, wireframes, and design iteration documentation</li>
+                <li><strong>Tool Proficiency:</strong> Certification in Windsurf and Lovable for AI-accelerated prototypes</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Week 4 -->
+      <div class="week-module week-4 mb-16 fade-in" data-week="4">
+        <!-- Progress Dot -->
+        <div class="progress-dot"></div>
+        
+        <div class="bg-card-bg border border-border-color rounded-2xl p-8 relative hover:border-border-hover transition-all duration-300">
+          <div class="flex items-center gap-4 mb-6">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-2">
+                <i data-lucide="target" class="w-5 h-5 text-fuchsia-400"></i>
+                <span class="text-sm font-semibold text-text-secondary uppercase tracking-wider">WEEK 4</span>
+              </div>
+              <div class="ml-auto">
+                <span class="px-3 py-1 bg-fuchsia-500/20 text-fuchsia-400 text-xs rounded-full">VALIDATION</span>
+              </div>
+            </div>
+          </div>
+          <h2 class="text-2xl font-bold mb-4 text-text-primary">STRATEGIC PLANNING & ROADMAPPING</h2>
+          <p class="text-lg text-text-secondary mb-8">Data-Driven Decisions with NotebookLM & Julius AI</p>
+          
+          <div class="space-y-8">
+            <!-- Week Objectives -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Week Objectives</h3>
+              <ul class="space-y-3 text-sm text-text-secondary">
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  Master product strategy: prioritize "what to build when" using evidence, not opinions
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  Apply frameworks: ROI vs. Effort matrices, OKR alignment, and outcome-driven roadmapping
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  Use NotebookLM to synthesize market research, feedback, and competitor analyses
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  "Silence the HIPPO"—base decisions on customer needs and analytics, not hierarchy
+                </li>
+              </ul>
+            </div>
+
+            <!-- Strategic Frameworks -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Strategic Frameworks You'll Master</h3>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-card-hover border border-border-color rounded-lg p-4 text-center">
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">RICE Scoring</h4>
+                  <p class="text-xs text-text-secondary">Reach × Impact × Confidence ÷ Effort</p>
+                </div>
+                <div class="bg-card-hover border border-border-color rounded-lg p-4 text-center">
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">Working Backwards</h4>
+                  <p class="text-xs text-text-secondary">Amazon's PR/FAQ approach</p>
+                </div>
+                <div class="bg-card-hover border border-border-color rounded-lg p-4 text-center">
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">OKR Alignment</h4>
+                  <p class="text-xs text-text-secondary">Objectives → Key Results → Features</p>
+                </div>
+                <div class="bg-card-hover border border-border-color rounded-lg p-4 text-center">
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">70/20/10 Rule</h4>
+                  <p class="text-xs text-text-secondary">Innovation / Iteration / Maintenance</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Assignments -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Detailed Assignments</h3>
+              <ul class="space-y-3 text-sm text-text-secondary">
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  Vision Statement & North Star Metric: Craft a 2-3 sentence vision and identify your key metric
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  Competitive Analysis with NotebookLM: Upload competitor materials, generate feature comparisons
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  Data-Driven Prioritization: Use Julius AI to analyze feature usage data and identify top 3 retention drivers
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  Product Roadmap Draft: Build a 3-month roadmap with milestones, backed by data and strategic reasoning
+                </li>
+              </ul>
+            </div>
+
+            <!-- Strategy in Action -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Strategy in Action</h3>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-card-hover border border-border-color rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">Amazon's Working Backwards</h4>
+                  <p class="text-xs text-text-secondary">Every feature starts with a press release. Forces clarity on customer benefit before writing code.</p>
+                </div>
+                <div class="bg-card-hover border border-border-color rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">Netflix's Data-Driven Features</h4>
+                  <p class="text-xs text-text-secondary">Skip Intro, 10-second rewind, and even House of Cards—all based on viewing data analysis.</p>
+                </div>
+                <div class="bg-card-hover border border-border-color rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">Uber's Strategic Expansion</h4>
+                  <p class="text-xs text-text-secondary">Targeted cities with taxi problems first, then expanded to adjacent services based on data.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tools -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Tools You'll Master</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="magnetic-card relative bg-card-hover border border-border-color rounded-lg p-6">
+                  <div class="w-12 h-12 bg-accent-soft rounded-full flex items-center justify-center text-xl font-bold mb-4 mx-auto">N</div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">NOTEBOOKLM</h4>
+                  <p class="text-xs text-text-secondary">Google's AI research assistant for synthesizing market data and competitor analysis</p>
+                </div>
+                <div class="magnetic-card relative bg-card-hover border border-border-color rounded-lg p-6">
+                  <div class="w-12 h-12 bg-accent-soft rounded-full flex items-center justify-center text-xl font-bold mb-4 mx-auto">J</div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">JULIUS AI</h4>
+                  <p class="text-xs text-text-secondary">AI data analyst for cohort analysis, retention curves, and predictive modeling</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Strategic Deliverables -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Strategic Deliverables</h3>
+              <ul class="space-y-3 text-sm text-text-secondary">
+                <li><strong>Product Roadmap & Strategy Doc:</strong> A polished multi-month roadmap with strategic narrative and PR/FAQ</li>
+                <li><strong>Data-Driven Artifacts:</strong> Julius AI charts and NotebookLM analyses showing how data influenced decisions</li>
+                <li><strong>Strategic Frameworks:</strong> Demonstrated mastery of RICE scoring, OKRs, and Working Backwards methodology</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Week 5 -->
+      <div class="week-module week-5 mb-16 fade-in" data-week="5">
+        <!-- Progress Dot -->
+        <div class="progress-dot"></div>
+        
+        <div class="bg-card-bg border border-border-color rounded-2xl p-8 relative hover:border-border-hover transition-all duration-300">
+          <div class="flex items-center gap-4 mb-6">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-2">
+                <i data-lucide="trending-up" class="w-5 h-5 text-white"></i>
+                <span class="text-sm font-semibold text-text-secondary uppercase tracking-wider">WEEK 5</span>
+              </div>
+              <div class="ml-auto">
+                <span class="px-3 py-1 bg-white/10 text-white border border-white/20 text-xs rounded-full">GROWTH</span>
+              </div>
+            </div>
+          </div>
+          <h2 class="text-2xl font-bold mb-4 text-text-primary">GROWTH STRATEGY & MARKETING</h2>
+          <p class="text-lg text-text-secondary mb-8">Build the Growth Machine with AI-Powered Marketing</p>
+          
+          <div class="space-y-8">
+            <!-- Week Objectives -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Week Objectives</h3>
+              <ul class="space-y-3 text-sm text-text-secondary">
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  Master growth strategy: "Build the growth machine first"—think distribution early, not after launch
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  Craft compelling positioning using proven frameworks (Geoffrey Moore's templates)
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  Use Palette AI to generate and test multiple copy variants at scale
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  Set up growth funnels in Mixpanel: Awareness → Acquisition → Activation → Retention → Referral
+                </li>
+              </ul>
+            </div>
+
+            <!-- Your Growth Funnel -->
+            <div class="bg-black/80 border border-white/20 rounded-2xl p-8">
+              <h3 class="text-2xl font-bold mb-8 text-white text-center uppercase tracking-wider">Your Growth Funnel</h3>
+              
+              <div class="max-w-4xl mx-auto space-y-6">
+                <!-- Awareness Stage -->
+                <div class="flex justify-center">
+                  <div class="w-full max-w-4xl bg-white/10 border border-white/30 rounded-2xl p-6 hover:bg-white/15 transition-all duration-300">
+                    <div class="flex items-center justify-between">
+                      <div class="text-xl font-bold text-white uppercase tracking-wider">Awareness</div>
+                      <div class="text-lg font-semibold text-gray-300">10,000 visitors</div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Acquisition Stage -->
+                <div class="flex justify-center">
+                  <div class="w-5/6 bg-white/10 border border-white/30 rounded-2xl p-6 hover:bg-white/15 transition-all duration-300">
+                    <div class="flex items-center justify-between">
+                      <div class="text-xl font-bold text-white uppercase tracking-wider">Acquisition</div>
+                      <div class="text-lg font-semibold text-gray-300">2,000 sign-ups</div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Activation Stage -->
+                <div class="flex justify-center">
+                  <div class="w-4/6 bg-white/10 border border-white/30 rounded-2xl p-6 hover:bg-white/15 transition-all duration-300">
+                    <div class="flex items-center justify-between">
+                      <div class="text-xl font-bold text-white uppercase tracking-wider">Activation</div>
+                      <div class="text-lg font-semibold text-gray-300">1,200 activated</div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Retention Stage -->
+                <div class="flex justify-center">
+                  <div class="w-3/6 bg-white/10 border border-white/30 rounded-2xl p-6 hover:bg-white/15 transition-all duration-300">
+                    <div class="flex items-center justify-between">
+                      <div class="text-xl font-bold text-white uppercase tracking-wider">Retention</div>
+                      <div class="text-lg font-semibold text-gray-300">480 retained</div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Referral Stage -->
+                <div class="flex justify-center">
+                  <div class="w-2/6 bg-white/10 border border-white/30 rounded-2xl p-6 hover:bg-white/15 transition-all duration-300">
+                    <div class="flex items-center justify-between">
+                      <div class="text-xl font-bold text-white uppercase tracking-wider">Referral</div>
+                      <div class="text-lg font-semibold text-gray-300">96 advocates</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Conversion Rates -->
+              <div class="mt-8 grid grid-cols-4 gap-4 max-w-2xl mx-auto">
+                <div class="text-center">
+                  <div class="text-sm text-gray-400 mb-1">Conversion</div>
+                  <div class="text-white font-semibold">20%</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-sm text-gray-400 mb-1">Activation</div>
+                  <div class="text-white font-semibold">60%</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-sm text-gray-400 mb-1">Retention</div>
+                  <div class="text-white font-semibold">40%</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-sm text-gray-400 mb-1">Advocacy</div>
+                  <div class="text-white font-semibold">20%</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Positioning Template -->
+            <div class="bg-card-hover border border-border-color rounded-lg p-6">
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Positioning Template in Action</h3>
+              <p class="text-sm text-text-secondary">
+                <strong>For</strong> freelance creatives <strong>who</strong> hate financial admin, <strong>EZBudget</strong> is a 
+                <strong>mobile expense tracker</strong> that <strong>automates bookkeeping</strong>. <strong>Unlike</strong> generic 
+                budgeting apps, <strong>our product</strong> uses AI to categorize receipts and save you hours weekly.
+              </p>
+            </div>
+
+            <!-- Assignments -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Detailed Assignments</h3>
+              <ul class="space-y-3 text-sm text-text-secondary">
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  Positioning Statement: Write using Moore's template for your product, clearly defining target, need, and differentiator
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  Landing Page & Copy: Design hero section with Palette AI generated variations
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  Growth Experiment Design: Propose hypothesis with implementation and metrics
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  Analytics Implementation: Set up Mixpanel funnel tracking Activation Rate, Week-1 Retention, and Referral Rate
+                </li>
+              </ul>
+            </div>
+
+            <!-- Growth Tactics -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Growth Tactics That Built Unicorns</h3>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-card-hover border border-border-color rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">Uber's Referral Engine</h4>
+                  <p class="text-xs text-text-secondary">Free ride credits for both parties fueled city-by-city expansion with minimal ad spend.</p>
+                </div>
+                <div class="bg-card-hover border border-border-color rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">Dropbox's Viral Loop</h4>
+                  <p class="text-xs text-text-secondary">100k to 4M users in 15 months via storage rewards and sharing features.</p>
+                </div>
+                <div class="bg-card-hover border border-border-color rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">Notion's Community Growth</h4>
+                  <p class="text-xs text-text-secondary">User champions on Twitter/YouTube, waiting-list hype, and positioning against fragmented tools.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Key Metrics -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Key Metrics You'll Master</h3>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="text-center p-4 bg-card-hover border border-border-color rounded-lg">
+                  <div class="text-2xl font-bold text-text-primary mb-2">₹500</div>
+                  <div class="text-sm font-semibold text-text-primary mb-1">CAC</div>
+                  <div class="text-xs text-text-secondary">Customer Acquisition Cost</div>
+                </div>
+                <div class="text-center p-4 bg-card-hover border border-border-color rounded-lg">
+                  <div class="text-2xl font-bold text-text-primary mb-2">₹3000</div>
+                  <div class="text-sm font-semibold text-text-primary mb-1">LTV</div>
+                  <div class="text-xs text-text-secondary">Lifetime Value</div>
+                </div>
+                <div class="text-center p-4 bg-card-hover border border-border-color rounded-lg">
+                  <div class="text-2xl font-bold text-text-primary mb-2">6:1</div>
+                  <div class="text-sm font-semibold text-text-primary mb-1">LTV:CAC</div>
+                  <div class="text-xs text-text-secondary">Unit Economics</div>
+                </div>
+                <div class="text-center p-4 bg-card-hover border border-border-color rounded-lg">
+                  <div class="text-2xl font-bold text-text-primary mb-2">60%</div>
+                  <div class="text-sm font-semibold text-text-primary mb-1">W1 Retention</div>
+                  <div class="text-xs text-text-secondary">Week 1 Retention Rate</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tools -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Tools You'll Master</h3>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="magnetic-card relative bg-card-hover border border-border-color rounded-lg p-6">
+                  <div class="w-12 h-12 bg-accent-soft rounded-full flex items-center justify-center text-xl font-bold mb-4 mx-auto">P</div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">PALETTE AI</h4>
+                  <p class="text-xs text-text-secondary">Generate multiple headline variants, ad copy, and marketing plans</p>
+                </div>
+                <div class="magnetic-card relative bg-card-hover border border-border-color rounded-lg p-6">
+                  <div class="w-12 h-12 bg-accent-soft rounded-full flex items-center justify-center text-xl font-bold mb-4 mx-auto">M</div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">MIXPANEL</h4>
+                  <p class="text-xs text-text-secondary">Track funnels, cohorts, and user behavior</p>
+                </div>
+                <div class="magnetic-card relative bg-card-hover border border-border-color rounded-lg p-6">
+                  <div class="w-12 h-12 bg-accent-soft rounded-full flex items-center justify-center text-xl font-bold mb-4 mx-auto">J</div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">JULIUS AI</h4>
+                  <p class="text-xs text-text-secondary">Analyze which channels deliver highest retention</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Growth Arsenal Deliverables -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Growth Arsenal Deliverables</h3>
+              <ul class="space-y-3 text-sm text-text-secondary">
+                <li><strong>Go-to-Market Plan:</strong> Complete GTM strategy with positioning, channels, and campaign outlines</li>
+                <li><strong>Marketing Assets:</strong> Landing page, social posts, ad copy with performance metrics</li>
+                <li><strong>Analytics Dashboard:</strong> Mixpanel setup tracking activation, retention, and referral metrics</li>
+                <li><strong>Growth Experiments:</strong> Documented A/B tests with hypotheses, results, and learnings</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Week 6 -->
+      <div class="week-module week-6 mb-16 fade-in" data-week="6">
+        <!-- Progress Dot -->
+        <div class="progress-dot"></div>
+        
+        <div class="bg-card-bg border border-border-color rounded-2xl p-8 relative hover:border-border-hover transition-all duration-300">
+          <div class="flex items-center gap-4 mb-6">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-2">
+                <i data-lucide="code" class="w-5 h-5 text-white"></i>
+                <span class="text-sm font-semibold text-text-secondary uppercase tracking-wider">WEEK 6</span>
+              </div>
+              <div class="ml-auto">
+                <span class="px-3 py-1 bg-white/10 text-white border border-white/20 text-xs rounded-full">BUILD</span>
+              </div>
+            </div>
+          </div>
+          <h2 class="text-2xl font-bold mb-4 text-text-primary">BUILD SPRINT I – MVP BUILD</h2>
+          <p class="text-lg text-text-secondary mb-8">From Architecture to Live Deployment with AI-Powered Development</p>
+          
+          <div class="space-y-8">
+            <!-- Week Objectives -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Week Objectives</h3>
+              <ul class="space-y-3 text-sm text-text-secondary">
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  Transition from planning to execution—build a working MVP using modern tools and AI assistance
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  Master system architecture: how front-end, back-end, and database components interact
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  Use Cursor AI to debug and generate code, reducing development time from weeks to days
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  Deploy your prototype live with proper environment configuration and CI/CD pipelines
+                </li>
+              </ul>
+            </div>
+
+            <!-- Your MVP Architecture -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Your MVP Architecture</h3>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="text-center p-6 bg-card-hover border border-border-color rounded-lg">
+                  <div class="text-white mb-4 flex justify-center">
+                    <i data-lucide="palette" class="w-10 h-10"></i>
+                  </div>
+                  <h4 class="text-lg font-semibold text-text-primary mb-2">Frontend</h4>
+                  <p class="text-sm text-text-secondary mb-2">React/Next.js</p>
+                  <div class="text-xs text-text-muted">Vercel Deploy</div>
+                </div>
+                <div class="text-center p-6 bg-card-hover border border-border-color rounded-lg">
+                  <div class="text-white mb-4 flex justify-center">
+                    <i data-lucide="server" class="w-10 h-10"></i>
+                  </div>
+                  <h4 class="text-lg font-semibold text-text-primary mb-2">Backend</h4>
+                  <p class="text-sm text-text-secondary mb-2">Node.js/Supabase</p>
+                  <div class="text-xs text-text-muted">Serverless</div>
+                </div>
+                <div class="text-center p-6 bg-card-hover border border-border-color rounded-lg">
+                  <div class="text-white mb-4 flex justify-center">
+                    <i data-lucide="database" class="w-10 h-10"></i>
+                  </div>
+                  <h4 class="text-lg font-semibold text-text-primary mb-2">Database</h4>
+                  <p class="text-sm text-text-secondary mb-2">PostgreSQL</p>
+                  <div class="text-xs text-text-muted">Managed DB</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Build Philosophy -->
+            <div class="bg-card-hover border border-border-color rounded-lg p-6">
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Build Philosophy: Speed Over Perfection</h3>
+              <p class="text-sm text-text-secondary mb-3">
+                <strong>Focus Question:</strong> "What's the simplest version that proves the concept?"
+              </p>
+              <p class="text-sm text-text-secondary">
+                Traditional approach: Spend weeks building perfect architecture. Product Maker approach: Deploy a working 
+                prototype in 48 hours using AI assistants, then iterate based on real user feedback. Your first version 
+                should embarrass you—if it doesn't, you launched too late.
+              </p>
+            </div>
+
+            <!-- Deployment Pipeline -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Deployment Pipeline</h3>
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="text-center p-4 bg-card-hover border border-border-color rounded-lg">
+                  <div class="text-white mb-2 flex justify-center">
+                    <i data-lucide="monitor" class="w-8 h-8"></i>
+                  </div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-1">Local Dev</h4>
+                  <p class="text-xs text-text-secondary">Cursor AI assists</p>
+                </div>
+                <div class="text-center p-4 bg-card-hover border border-border-color rounded-lg">
+                  <div class="text-white mb-2 flex justify-center">
+                    <i data-lucide="refresh-cw" class="w-8 h-8"></i>
+                  </div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-1">Git Push</h4>
+                  <p class="text-xs text-text-secondary">Version control</p>
+                </div>
+                <div class="text-center p-4 bg-card-hover border border-border-color rounded-lg">
+                  <div class="text-2xl mb-2">🔨</div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-1">CI/CD</h4>
+                  <p class="text-xs text-text-secondary">Auto build & test</p>
+                </div>
+                <div class="text-center p-4 bg-card-hover border border-border-color rounded-lg">
+                  <div class="text-white mb-2 flex justify-center">
+                    <i data-lucide="rocket" class="w-8 h-8"></i>
+                  </div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-1">Deploy</h4>
+                  <p class="text-xs text-text-secondary">Live in minutes</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Assignments -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Detailed Assignments</h3>
+              <ul class="space-y-3 text-sm text-text-secondary">
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  Architecture Diagram & Prototype: Create system diagram and implement core feature. Deploy live with working URL
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  AI-Assisted Debugging Log: Document 2+ bugs and show how Cursor helped solve them
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  Deployment Walkthrough: Step-by-step guide of your deployment process
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  Feature Feedback Loop: Add feedback widget to capture user input
+                </li>
+              </ul>
+            </div>
+
+            <!-- Tools -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Tools You'll Master</h3>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="magnetic-card relative bg-card-hover border border-border-color rounded-lg p-6">
+                  <div class="w-12 h-12 bg-accent-soft rounded-full flex items-center justify-center text-xl font-bold mb-4 mx-auto">C</div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">CURSOR</h4>
+                  <p class="text-xs text-text-secondary">AI coding assistant for debugging and code generation</p>
+                </div>
+                <div class="magnetic-card relative bg-card-hover border border-border-color rounded-lg p-6">
+                  <div class="w-12 h-12 bg-accent-soft rounded-full flex items-center justify-center text-xl font-bold mb-4 mx-auto">V</div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">VERCEL</h4>
+                  <p class="text-xs text-text-secondary">One-click frontend deployment with automatic CI/CD</p>
+                </div>
+                <div class="magnetic-card relative bg-card-hover border border-border-color rounded-lg p-6">
+                  <div class="w-12 h-12 bg-accent-soft rounded-full flex items-center justify-center text-xl font-bold mb-4 mx-auto">S</div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">SUPABASE</h4>
+                  <p class="text-xs text-text-secondary">Backend-as-a-Service with auth, database, and real-time subscriptions</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Week 6 Deliverables -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Week 6 Deliverables</h3>
+              <ul class="space-y-3 text-sm text-text-secondary">
+                <li><strong>Live MVP:</strong> A deployed, functional prototype with at least one core feature accessible via public URL</li>
+                <li><strong>Architecture Documentation:</strong> System diagram showing how components interact and data flows</li>
+                <li><strong>Deployment Pipeline:</strong> Automated CI/CD setup enabling rapid iteration and deployment</li>
+                <li><strong>AI Development Skills:</strong> Demonstrated ability to leverage Cursor for 10x development speed</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Week 7 -->
+      <div class="week-module week-7 mb-16 fade-in" data-week="7">
+        <!-- Progress Dot -->
+        <div class="progress-dot"></div>
+        
+        <div class="bg-card-bg border border-border-color rounded-2xl p-8 relative hover:border-border-hover transition-all duration-300">
+          <div class="flex items-center gap-4 mb-6">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-2">
+                <i data-lucide="shield-check" class="w-5 h-5 text-white"></i>
+                <span class="text-sm font-semibold text-text-secondary uppercase tracking-wider">WEEK 7</span>
+              </div>
+              <div class="ml-auto">
+                <span class="px-3 py-1 bg-emerald-500/20 text-white text-xs rounded-full">POLISH</span>
+              </div>
+            </div>
+          </div>
+          <h2 class="text-2xl font-bold mb-4 text-text-primary">BUILD SPRINT II – REFINEMENT & LAUNCH PREP</h2>
+          <p class="text-lg text-text-secondary mb-8">Polish Your MVP into a Launch-Ready Product</p>
+          
+          <div class="space-y-8">
+            <!-- Week Objectives -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Week Objectives</h3>
+              <ul class="space-y-3 text-sm text-text-secondary">
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  Transform your MVP into a polished, launch-ready product with advanced features
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  Master UX refinement: usability testing, accessibility, responsive design, and performance
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  Implement security basics: input validation, secret management, vulnerability checks
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  Integrate analytics (Mixpanel) for real-time usage tracking and data-driven decisions
+                </li>
+              </ul>
+            </div>
+
+            <!-- Launch Readiness Checklist -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Launch Readiness Checklist</h3>
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-card-hover border border-border-color rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-text-primary mb-3">🔒 Security</h4>
+                  <ul class="space-y-2 text-xs text-text-secondary">
+                    <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-white flex-shrink-0 mt-1"></i> Input validation</li>
+                    <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-white flex-shrink-0 mt-1"></i> API key protection</li>
+                    <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-white flex-shrink-0 mt-1"></i> HTTPS enabled</li>
+                    <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-white flex-shrink-0 mt-1"></i> Auth flow tested</li>
+                  </ul>
+                </div>
+                <div class="bg-card-hover border border-border-color rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-text-primary mb-3 flex items-center gap-2">
+                    <i data-lucide="bar-chart-3" class="w-4 h-4 text-white"></i>
+                    Analytics
+                  </h4>
+                  <ul class="space-y-2 text-xs text-text-secondary">
+                    <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-white flex-shrink-0 mt-1"></i> Mixpanel integrated</li>
+                    <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-white flex-shrink-0 mt-1"></i> Key events tracked</li>
+                    <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-white flex-shrink-0 mt-1"></i> Funnels configured</li>
+                    <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-white flex-shrink-0 mt-1"></i> Dashboards live</li>
+                  </ul>
+                </div>
+                <div class="bg-card-hover border border-border-color rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-text-primary mb-3 flex items-center gap-2">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-white"></i>
+                    UX Polish
+                  </h4>
+                  <ul class="space-y-2 text-xs text-text-secondary">
+                    <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-white flex-shrink-0 mt-1"></i> Mobile responsive</li>
+                    <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-white flex-shrink-0 mt-1"></i> Accessibility audit</li>
+                    <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-white flex-shrink-0 mt-1"></i> Loading states</li>
+                    <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-white flex-shrink-0 mt-1"></i> Error handling</li>
+                  </ul>
+                </div>
+                <div class="bg-card-hover border border-border-color rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-text-primary mb-3 flex items-center gap-2">
+                    <i data-lucide="rocket" class="w-4 h-4 text-white"></i>
+                    Deployment
+                  </h4>
+                  <ul class="space-y-2 text-xs text-text-secondary">
+                    <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-white flex-shrink-0 mt-1"></i> Production env</li>
+                    <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-white flex-shrink-0 mt-1"></i> Monitoring setup</li>
+                    <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-white flex-shrink-0 mt-1"></i> Backup strategy</li>
+                    <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-white flex-shrink-0 mt-1"></i> Support channel</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- The Last Mile Mindset -->
+            <div class="bg-card-hover border border-border-color rounded-lg p-6">
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">The Last Mile Mindset</h3>
+              <p class="text-sm text-text-secondary mb-3">
+                <strong>Focus Question:</strong> "The difference between a prototype and a product is in the details."
+              </p>
+              <p class="text-sm text-text-secondary">
+                Week 6 built functionality. Week 7 builds trust. Security, accessibility, performance, and polish 
+                transform a working prototype into something users will actually pay for. This week teaches you 
+                to spot and fix the thousand tiny issues that separate amateur projects from professional products.
+              </p>
+            </div>
+
+            <!-- Testing & QA Workflow -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Testing & QA Workflow</h3>
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="text-center p-4 bg-card-hover border border-border-color rounded-lg">
+                  <div class="text-white mb-2 flex justify-center">
+                    <i data-lucide="flask-conical" class="w-8 h-8"></i>
+                  </div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-1">Unit Tests</h4>
+                  <p class="text-xs text-text-secondary">Core functions covered</p>
+                  <div class="text-xs text-white mt-2">npm test ✓</div>
+                </div>
+                <div class="text-center p-4 bg-card-hover border border-border-color rounded-lg">
+                  <div class="text-white mb-2 flex justify-center">
+                    <i data-lucide="search" class="w-8 h-8"></i>
+                  </div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-1">Manual QA</h4>
+                  <p class="text-xs text-text-secondary">User flows verified</p>
+                  <div class="text-xs text-white mt-2">5/5 passed</div>
+                </div>
+                <div class="text-center p-4 bg-card-hover border border-border-color rounded-lg">
+                  <div class="text-white mb-2 flex justify-center">
+                    <i data-lucide="users" class="w-8 h-8"></i>
+                  </div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-1">Beta Testing</h4>
+                  <p class="text-xs text-text-secondary">Real user feedback</p>
+                  <div class="text-xs text-white mt-2">3 bugs found</div>
+                </div>
+                <div class="text-center p-4 bg-card-hover border border-border-color rounded-lg">
+                  <div class="text-white mb-2 flex justify-center">
+                    <i data-lucide="check-circle-2" class="w-8 h-8"></i>
+                  </div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-1">Launch Ready</h4>
+                  <p class="text-xs text-text-secondary">All systems go</p>
+                  <div class="text-xs text-white mt-2">Deploy v1.0</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Assignments -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Detailed Assignments</h3>
+              <ul class="space-y-3 text-sm text-text-secondary">
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  Feature Enhancement: Implement one advanced feature (payments, uploads, etc.) with trade-off documentation
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  UX Improvement: Fix a user-reported issue with before/after screenshots and impact metrics
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  Analytics Dashboard: Configure Mixpanel with funnels showing real usage patterns
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  Beta Feedback: Gather feedback from 2-5 external users and create action plan
+                </li>
+              </ul>
+            </div>
+
+            <!-- Tools -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Tools You'll Master</h3>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="magnetic-card relative bg-card-hover border border-border-color rounded-lg p-6">
+                  <div class="w-12 h-12 bg-accent-soft rounded-full flex items-center justify-center text-xl font-bold mb-4 mx-auto">M</div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">MIXPANEL</h4>
+                  <p class="text-xs text-text-secondary">Production analytics integration with real-time dashboards</p>
+                </div>
+                <div class="magnetic-card relative bg-card-hover border border-border-color rounded-lg p-6">
+                  <div class="w-12 h-12 bg-accent-soft rounded-full flex items-center justify-center text-xl font-bold mb-4 mx-auto">J</div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">JEST/MOCHA</h4>
+                  <p class="text-xs text-text-secondary">Automated testing frameworks for unit and integration testing</p>
+                </div>
+                <div class="magnetic-card relative bg-card-hover border border-border-color rounded-lg p-6">
+                  <div class="w-12 h-12 bg-accent-soft rounded-full flex items-center justify-center text-xl font-bold mb-4 mx-auto">S</div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">SENTRY</h4>
+                  <p class="text-xs text-text-secondary">Error monitoring and performance tracking for production</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Launch-Ready Deliverables -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Launch-Ready Deliverables</h3>
+              <ul class="space-y-3 text-sm text-text-secondary">
+                <li><strong>Polished Product:</strong> A fully tested, secure, and refined product ready for real users</li>
+                <li><strong>Test Coverage:</strong> Automated test suite or comprehensive QA documentation</li>
+                <li><strong>Analytics Setup:</strong> Production-ready analytics tracking with actionable dashboards</li>
+                <li><strong>Launch Checklist:</strong> Complete pre-launch verification covering security, performance, and UX</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Week 8 -->
+      <div class="week-module week-8 mb-16 fade-in" data-week="8">
+        <!-- Progress Dot -->
+        <div class="progress-dot"></div>
+        
+        <div class="bg-card-bg border border-border-color rounded-2xl p-8 relative hover:border-border-hover transition-all duration-300">
+          <div class="flex items-center gap-4 mb-6">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-2">
+                <i data-lucide="rocket" class="w-5 h-5 text-white"></i>
+                <span class="text-sm font-semibold text-text-secondary uppercase tracking-wider">WEEK 8</span>
+              </div>
+              <div class="ml-auto">
+                <span class="px-3 py-1 bg-green-500/20 text-white text-xs rounded-full">LAUNCH</span>
+              </div>
+            </div>
+          </div>
+          <h2 class="text-2xl font-bold mb-4 text-text-primary">DEMO DAY PREP & LAUNCH</h2>
+          <p class="text-lg text-text-secondary mb-8">Pitch Perfect, Launch Strong, Scale Smart</p>
+          
+          <div class="space-y-8">
+            <!-- Week Objectives -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Week Objectives</h3>
+              <ul class="space-y-3 text-sm text-text-secondary">
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  Master the art of pitching: problem hook, solution demo, market opportunity, and traction metrics
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  Create compelling storytelling that leads with user pain, not just features
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  Execute strategic launches on Product Hunt, communities, or press outreach
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="text-text-primary">•</span>
+                  Handle live Q&A with confidence using data-backed answers and strategic positioning
+                </li>
+              </ul>
+            </div>
+
+            <!-- Your Winning Pitch Structure -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Your Winning Pitch Structure</h3>
+              <div class="space-y-3">
+                <div class="flex items-center gap-4 p-3 bg-card-hover border border-border-color rounded-lg">
+                  <div class="w-20 text-sm font-semibold text-text-primary">1. Problem</div>
+                  <div class="flex-1 text-sm text-text-secondary">Hook with user pain (30 sec)</div>
+                </div>
+                <div class="flex items-center gap-4 p-3 bg-card-hover border border-border-color rounded-lg">
+                  <div class="w-20 text-sm font-semibold text-text-primary">2. Solution</div>
+                  <div class="flex-1 text-sm text-text-secondary">Your unique approach (45 sec)</div>
+                </div>
+                <div class="flex items-center gap-4 p-3 bg-card-hover border border-border-color rounded-lg">
+                  <div class="w-20 text-sm font-semibold text-text-primary">3. Demo</div>
+                  <div class="flex-1 text-sm text-text-secondary">Show, don't tell (60 sec)</div>
+                </div>
+                <div class="flex items-center gap-4 p-3 bg-card-hover border border-border-color rounded-lg">
+                  <div class="w-20 text-sm font-semibold text-text-primary">4. Market</div>
+                  <div class="flex-1 text-sm text-text-secondary">Size & opportunity (30 sec)</div>
+                </div>
+                <div class="flex items-center gap-4 p-3 bg-card-hover border border-border-color rounded-lg">
+                  <div class="w-20 text-sm font-semibold text-text-primary">5. Ask/CTA</div>
+                  <div class="flex-1 text-sm text-text-secondary">Clear next steps (15 sec)</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Launch Strategy Playbook -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Launch Strategy Playbook</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-card-hover border border-border-color rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-text-primary mb-2 flex items-center gap-2">
+                    <i data-lucide="rocket" class="w-4 h-4 text-white"></i>
+                    Product Hunt
+                  </h4>
+                  <p class="text-xs text-text-secondary mb-2"><strong>Best Time:</strong> 12:01 AM PST Tuesday</p>
+                  <p class="text-xs text-text-secondary mb-2"><strong>Key Tactic:</strong> Engage every comment</p>
+                  <p class="text-xs text-white"><strong>Success Metric:</strong> Top 5 of day</p>
+                </div>
+                <div class="bg-card-hover border border-border-color rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">💬 Communities</h4>
+                  <p class="text-xs text-text-secondary mb-2"><strong>Targets:</strong> Reddit, Discord, Slack</p>
+                  <p class="text-xs text-text-secondary mb-2"><strong>Key Tactic:</strong> Value-first approach</p>
+                  <p class="text-xs text-white"><strong>Success Metric:</strong> 20% conversion</p>
+                </div>
+                <div class="bg-card-hover border border-border-color rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">📰 Press/Media</h4>
+                  <p class="text-xs text-text-secondary mb-2"><strong>Approach:</strong> Personalized pitches</p>
+                  <p class="text-xs text-text-secondary mb-2"><strong>Key Tactic:</strong> Exclusive angles</p>
+                  <p class="text-xs text-white"><strong>Success Metric:</strong> 2-3 features</p>
+                </div>
+                <div class="bg-card-hover border border-border-color rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">🐦 Social Media</h4>
+                  <p class="text-xs text-text-secondary mb-2"><strong>Platform:</strong> Twitter/LinkedIn</p>
+                  <p class="text-xs text-text-secondary mb-2"><strong>Key Tactic:</strong> Build in public</p>
+                  <p class="text-xs text-white"><strong>Success Metric:</strong> Viral moment</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Demo Day Mindset -->
+            <div class="bg-card-hover border border-border-color rounded-lg p-6">
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Demo Day Mindset</h3>
+              <p class="text-sm text-text-secondary mb-3">
+                <strong>Remember:</strong> "You're not selling a product. You're selling a vision of a better future."
+              </p>
+              <p class="text-sm text-text-secondary">
+                The best pitches don't list features—they paint a picture of transformation. Start with a story that makes the audience feel the problem, then position your product as the inevitable solution. Your demo should feel like magic, not a tutorial.
+              </p>
+            </div>
+
+            <!-- Final UX Polish -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Final UX Polish</h3>
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-card-hover border border-border-color rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-text-primary mb-2 flex items-center gap-2">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-white"></i>
+                    First Impressions
+                  </h4>
+                  <ul class="text-xs text-text-secondary space-y-1">
+                    <li>Landing page hero</li>
+                    <li>Loading animations</li>
+                    <li>Welcome emails</li>
+                  </ul>
+                </div>
+                <div class="bg-card-hover border border-border-color rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-text-primary mb-2 flex items-center gap-2">
+                    <i data-lucide="target" class="w-4 h-4 text-white"></i>
+                    Onboarding
+                  </h4>
+                  <ul class="text-xs text-text-secondary space-y-1">
+                    <li>Tutorial flow</li>
+                    <li>Sample data</li>
+                    <li>Quick wins</li>
+                  </ul>
+                </div>
+                <div class="bg-card-hover border border-border-color rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-text-primary mb-2 flex items-center gap-2">
+                    <i data-lucide="palette" class="w-4 h-4 text-white"></i>
+                    Branding
+                  </h4>
+                  <ul class="text-xs text-text-secondary space-y-1">
+                    <li>Logo & colors</li>
+                    <li>Consistent copy</li>
+                    <li>Social assets</li>
+                  </ul>
+                </div>
+                <div class="bg-card-hover border border-border-color rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-text-primary mb-2 flex items-center gap-2">
+                    <i data-lucide="smartphone" class="w-4 h-4 text-white"></i>
+                    Responsive
+                  </h4>
+                  <ul class="text-xs text-text-secondary space-y-1">
+                    <li>Mobile perfect</li>
+                    <li>Touch targets</li>
+                    <li>Offline states</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Assignments -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Detailed Assignments</h3>
+              <ul class="space-y-3 text-sm text-text-secondary">
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  Pitch Deck & Demo Video: 5-slide deck + 2-3 minute polished demo video showcasing your product's magic
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  Launch Plan Document: Platform selection, messaging, timing, engagement strategy, and support structure
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  Final UX Polish: Screenshots of onboarding, mobile views, and micro-interactions with performance notes
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="text-white flex-shrink-0 mt-1">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  </div>
+                  Mock Q&A Session: Handle 3+ tough questions with polished, data-backed responses
+                </li>
+              </ul>
+            </div>
+
+            <!-- Q&A Battle Preparation -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Q&A Battle Preparation</h3>
+              <div class="space-y-4">
+                <div class="bg-card-hover border border-border-color rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">The Competition Question</h4>
+                  <p class="text-xs text-text-secondary mb-2"><strong>"How do you differ from [Competitor X]?"</strong></p>
+                  <p class="text-xs text-text-secondary">→ Focus on unique insights, not features. Show deep user understanding.</p>
+                </div>
+                <div class="bg-card-hover border border-border-color rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">The Revenue Question</h4>
+                  <p class="text-xs text-text-secondary mb-2"><strong>"What's your business model?"</strong></p>
+                  <p class="text-xs text-text-secondary">→ Present clear monetization path with comparable examples.</p>
+                </div>
+                <div class="bg-card-hover border border-border-color rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">The Timing Question</h4>
+                  <p class="text-xs text-text-secondary mb-2"><strong>"Why is now the right time?"</strong></p>
+                  <p class="text-xs text-text-secondary">→ Point to market shifts, tech enablers, or behavior changes.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Launch Week Toolkit -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Launch Week Toolkit</h3>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="magnetic-card relative bg-card-hover border border-border-color rounded-lg p-6">
+                  <div class="w-12 h-12 bg-accent-soft rounded-full flex items-center justify-center text-xl font-bold mb-4 mx-auto">🎬</div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">LOOM/OBS</h4>
+                  <p class="text-xs text-text-secondary">Professional demo recording with smooth narration and screen capture</p>
+                </div>
+                <div class="magnetic-card relative bg-card-hover border border-border-color rounded-lg p-6">
+                  <div class="w-12 h-12 bg-accent-soft rounded-full flex items-center justify-center mb-4 mx-auto">
+                    <i data-lucide="palette" class="w-6 h-6 text-white"></i>
+                  </div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">CANVA/FIGMA</h4>
+                  <p class="text-xs text-text-secondary">Create pitch decks, social assets, and product screenshots</p>
+                </div>
+                <div class="magnetic-card relative bg-card-hover border border-border-color rounded-lg p-6">
+                  <div class="w-12 h-12 bg-accent-soft rounded-full flex items-center justify-center mb-4 mx-auto">
+                    <i data-lucide="bar-chart-3" class="w-6 h-6 text-white"></i>
+                  </div>
+                  <h4 class="text-sm font-semibold text-text-primary mb-2">ANALYTICS</h4>
+                  <p class="text-xs text-text-secondary">Track launch metrics, user behavior, and conversion funnels</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Demo Day Deliverables -->
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-text-primary">Demo Day Deliverables</h3>
+              <ul class="space-y-3 text-sm text-text-secondary">
+                <li><strong>Pitch Perfect:</strong> A compelling pitch deck and demo video ready for investors or customers</li>
+                <li><strong>Launch Execution:</strong> Documented launch with metrics, feedback, and iteration plans</li>
+                <li><strong>Presentation Mastery:</strong> Confident delivery with strong storytelling and Q&A handling</li>
+                <li><strong>Market-Ready Product:</strong> Fully polished product with support systems and growth strategy</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div> <!-- End Timeline Container -->
+    </div>
+  </section>
+
+  <!-- ===== TRANSFORMATION SECTION ===== -->
+  <section id="transformation" class="py-24 bg-primary-bg relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-8 relative z-10">
+      <h1 class="font-display text-title font-bold text-center mb-16">Your Transformation Journey</h1>
+      
+      <!-- Transformation Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 mb-16">
+        <!-- Card 1: From Idea to Launch -->
+        <div class="magnetic-card relative bg-card-bg border border-border-color rounded-2xl p-8 hover:border-border-hover transition-all duration-300">
+          <div class="w-16 h-16 bg-gradient-to-br from-white to-gray-300 rounded-2xl flex items-center justify-center mb-6 mx-auto border border-white/20">
+            <i data-lucide="lightbulb" class="w-8 h-8 text-black"></i>
+          </div>
+          <h3 class="text-lg font-bold text-text-primary mb-4 text-center">From Idea to Launch</h3>
+          <div class="space-y-4">
+            <div class="text-center">
+              <div class="text-sm text-text-muted mb-2">BEFORE</div>
+              <div class="text-xs text-text-secondary leading-relaxed">Stuck in endless planning cycles, perfectionism paralysis, no clear roadmap</div>
+            </div>
+            <div class="h-px bg-border-color mx-4"></div>
+            <div class="text-center">
+              <div class="text-sm text-text-primary mb-2">AFTER</div>
+              <div class="text-xs text-text-primary leading-relaxed">Ship working MVP in 8 weeks with user feedback and clear next steps</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Tech Skills -->
+        <div class="magnetic-card relative bg-card-bg border border-border-color rounded-2xl p-8 hover:border-border-hover transition-all duration-300">
+          <div class="w-16 h-16 bg-gradient-to-br from-white to-gray-300 rounded-2xl flex items-center justify-center mb-6 mx-auto border border-white/20">
+            <i data-lucide="zap" class="w-8 h-8 text-black"></i>
+          </div>
+          <h3 class="text-lg font-bold text-text-primary mb-4 text-center">Tech Skills</h3>
+          <div class="space-y-4">
+            <div class="text-center">
+              <div class="text-sm text-text-muted mb-2">BEFORE</div>
+              <div class="text-xs text-text-secondary leading-relaxed">Overwhelmed by coding, dependent on developers, technical debt fears</div>
+            </div>
+            <div class="h-px bg-border-color mx-4"></div>
+            <div class="text-center">
+              <div class="text-sm text-text-primary mb-2">AFTER</div>
+              <div class="text-xs text-text-primary leading-relaxed">Use AI tools to build 10x faster, understand tech stack, ship independently</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Decision Making -->
+        <div class="magnetic-card relative bg-card-bg border border-border-color rounded-2xl p-8 hover:border-border-hover transition-all duration-300">
+          <div class="w-16 h-16 bg-gradient-to-br from-white to-gray-300 rounded-2xl flex items-center justify-center mb-6 mx-auto border border-white/20">
+            <i data-lucide="bar-chart-3" class="w-8 h-8 text-black"></i>
+          </div>
+          <h3 class="text-lg font-bold text-text-primary mb-4 text-center">Decision Making</h3>
+          <div class="space-y-4">
+            <div class="text-center">
+              <div class="text-sm text-text-muted mb-2">BEFORE</div>
+              <div class="text-xs text-text-secondary leading-relaxed">Gut-based decisions, feature creep, building what competitors do</div>
+            </div>
+            <div class="h-px bg-border-color mx-4"></div>
+            <div class="text-center">
+              <div class="text-sm text-text-primary mb-2">AFTER</div>
+              <div class="text-xs text-text-primary leading-relaxed">Data-driven choices using analytics, user research, and growth metrics</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Growth Strategy -->
+        <div class="magnetic-card relative bg-card-bg border border-border-color rounded-2xl p-8 hover:border-border-hover transition-all duration-300">
+          <div class="w-16 h-16 bg-gradient-to-br from-white to-gray-300 rounded-2xl flex items-center justify-center mb-6 mx-auto border border-white/20">
+            <i data-lucide="rocket" class="w-8 h-8 text-black"></i>
+          </div>
+          <h3 class="text-lg font-bold text-text-primary mb-4 text-center">Growth Strategy</h3>
+          <div class="space-y-4">
+            <div class="text-center">
+              <div class="text-sm text-text-muted mb-2">BEFORE</div>
+              <div class="text-xs text-text-secondary leading-relaxed">"Build it and they will come" mentality, no distribution plan</div>
+            </div>
+            <div class="h-px bg-border-color mx-4"></div>
+            <div class="text-center">
+              <div class="text-sm text-text-primary mb-2">AFTER</div>
+              <div class="text-xs text-text-primary leading-relaxed">Growth-first mindset with proven acquisition funnels and retention loops</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5: Mindset -->
+        <div class="magnetic-card relative bg-card-bg border border-border-color rounded-2xl p-8 hover:border-border-hover transition-all duration-300">
+          <div class="w-16 h-16 bg-gradient-to-br from-white to-gray-300 rounded-2xl flex items-center justify-center mb-6 mx-auto border border-white/20">
+            <i data-lucide="brain" class="w-8 h-8 text-black"></i>
+          </div>
+          <h3 class="text-lg font-bold text-text-primary mb-4 text-center">Mindset</h3>
+          <div class="space-y-4">
+            <div class="text-center">
+              <div class="text-sm text-text-muted mb-2">BEFORE</div>
+              <div class="text-xs text-text-secondary leading-relaxed">Afraid of launching imperfect products, impostor syndrome</div>
+            </div>
+            <div class="h-px bg-border-color mx-4"></div>
+            <div class="text-center">
+              <div class="text-sm text-text-primary mb-2">AFTER</div>
+              <div class="text-xs text-text-primary leading-relaxed">Embrace iteration, confident in shipping early, learn from user feedback</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Before/After Comparison -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16 p-12 bg-card-bg rounded-3xl border border-border-color">
+        <div>
+          <h3 class="text-xl font-bold mb-8 text-text-primary uppercase tracking-wider">Before</h3>
+          <ul class="space-y-4">
+            <li class="flex items-start gap-4">
+              <i data-lucide="arrow-right" class="w-4 h-4 text-text-muted flex-shrink-0 mt-1"></i>
+              <span class="text-text-secondary">Stuck in endless planning cycles without shipping</span>
+            </li>
+            <li class="flex items-start gap-4">
+              <i data-lucide="arrow-right" class="w-4 h-4 text-text-muted flex-shrink-0 mt-1"></i>
+              <span class="text-text-secondary">Building features based on opinions, not data</span>
+            </li>
+            <li class="flex items-start gap-4">
+              <i data-lucide="arrow-right" class="w-4 h-4 text-text-muted flex-shrink-0 mt-1"></i>
+              <span class="text-text-secondary">Overwhelmed by technical complexity</span>
+            </li>
+            <li class="flex items-start gap-4">
+              <i data-lucide="arrow-right" class="w-4 h-4 text-text-muted flex-shrink-0 mt-1"></i>
+              <span class="text-text-secondary">No clear path from idea to launch</span>
+            </li>
+            <li class="flex items-start gap-4">
+              <i data-lucide="arrow-right" class="w-4 h-4 text-text-muted flex-shrink-0 mt-1"></i>
+              <span class="text-text-secondary">"Build it and they will come" mentality</span>
+            </li>
+            <li class="flex items-start gap-4">
+              <i data-lucide="arrow-right" class="w-4 h-4 text-text-muted flex-shrink-0 mt-1"></i>
+              <span class="text-text-secondary">Afraid of launching imperfect products</span>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-8 text-text-primary uppercase tracking-wider">After</h3>
+          <ul class="space-y-4">
+            <li class="flex items-start gap-4">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+              </div>
+              <span class="text-text-primary">Ship working products in weeks, not months</span>
+            </li>
+            <li class="flex items-start gap-4">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+              </div>
+              <span class="text-text-primary">Make decisions backed by real user data</span>
+            </li>
+            <li class="flex items-start gap-4">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+              </div>
+              <span class="text-text-primary">Leverage AI to build 10x faster</span>
+            </li>
+            <li class="flex items-start gap-4">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+              </div>
+              <span class="text-text-primary">Proven playbook for consistent success</span>
+            </li>
+            <li class="flex items-start gap-4">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+              </div>
+              <span class="text-text-primary">Growth-first mindset with acquisition funnels</span>
+            </li>
+            <li class="flex items-start gap-4">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+              </div>
+              <span class="text-text-primary">Confident in iterating based on user feedback</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
+        <div class="text-center p-8 bg-card-bg rounded-2xl border border-border-color hover:border-border-hover hover:transform hover:scale-105 transition-all duration-300">
+          <div class="text-5xl font-bold mb-4 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">8</div>
+          <div class="text-sm text-text-secondary leading-relaxed">Weeks to Launch</div>
+        </div>
+        <div class="text-center p-8 bg-card-bg rounded-2xl border border-border-color hover:border-border-hover hover:transform hover:scale-105 transition-all duration-300">
+          <div class="text-5xl font-bold mb-4 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">100%</div>
+          <div class="text-sm text-text-secondary leading-relaxed">Ship Something</div>
+        </div>
+        <div class="text-center p-8 bg-card-bg rounded-2xl border border-border-color hover:border-border-hover hover:transform hover:scale-105 transition-all duration-300">
+          <div class="text-5xl font-bold mb-4 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">10x</div>
+          <div class="text-sm text-text-secondary leading-relaxed">Faster Building</div>
+        </div>
+        <div class="text-center p-8 bg-card-bg rounded-2xl border border-border-color hover:border-border-hover hover:transform hover:scale-105 transition-all duration-300">
+          <div class="text-5xl font-bold mb-4 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">∞</div>
+          <div class="text-sm text-text-secondary leading-relaxed">Mindset Shift</div>
+        </div>
+      </div>
+
+      <!-- Final CTA -->
+      <div class="text-center p-12 bg-card-bg rounded-3xl border border-border-color">
+        <h2 class="text-2xl font-bold mb-6 text-text-primary leading-tight">Ready to Transform Into a Product Maker?</h2>
+        <p class="text-lg text-text-secondary mb-8 leading-relaxed max-w-2xl mx-auto">
+          Join the next cohort and build something remarkable in just 8 weeks.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <a href="#" class="ripple-btn inline-block px-8 py-4 bg-text-primary text-primary-bg font-semibold rounded-lg hover:transform hover:scale-105 hover:shadow-xl transition-all duration-300">
+            Apply for Next Cohort
+          </a>
+          <div class="text-sm text-text-muted">
+            Next cohort starts <strong>on 22nd June 2024</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Membership Structure Section -->
+  <section id="membership" class="py-24 bg-card-bg relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-8 relative z-10">
+      <div class="text-center mb-16">
+        <h1 class="font-display text-title font-bold mb-8">Membership Structure</h1>
+        <p class="text-xl text-text-secondary max-w-3xl mx-auto leading-relaxed">
+          We're building a community of makers, not just students. Every cohort becomes a lifelong network of product builders supporting each other's success.
+        </p>
+      </div>
+
+      <!-- Selection Criteria -->
+      <div class="mb-16">
+        <h2 class="text-2xl font-bold text-text-primary mb-8 text-center">Who We're Looking For</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div class="magnetic-card relative bg-primary-bg border border-border-color rounded-2xl p-8 hover:border-border-hover transition-all duration-300">
+            <div class="w-16 h-16 bg-gradient-to-br from-white to-gray-300 rounded-2xl flex items-center justify-center mb-6 mx-auto border border-white/20">
+              <i data-lucide="target" class="w-8 h-8 text-black"></i>
+            </div>
+            <h3 class="text-lg font-bold text-text-primary mb-4 text-center">Committed Builders</h3>
+            <p class="text-sm text-text-secondary leading-relaxed text-center">
+              People ready to dedicate 10-15 hours/week for 8 weeks. This isn't a passive course - it's an intensive building experience.
+            </p>
+          </div>
+          
+          <div class="magnetic-card relative bg-primary-bg border border-border-color rounded-2xl p-8 hover:border-border-hover transition-all duration-300">
+            <div class="w-16 h-16 bg-gradient-to-br from-white to-gray-300 rounded-2xl flex items-center justify-center mb-6 mx-auto border border-white/20">
+              <i data-lucide="lightbulb" class="w-8 h-8 text-black"></i>
+            </div>
+            <h3 class="text-lg font-bold text-text-primary mb-4 text-center">Problem Solvers</h3>
+            <p class="text-sm text-text-secondary leading-relaxed text-center">
+              You see problems everywhere and want to build solutions. Domain expertise helps but isn't required - curiosity and persistence matter more.
+            </p>
+          </div>
+          
+          <div class="magnetic-card relative bg-primary-bg border border-border-color rounded-2xl p-8 hover:border-border-hover transition-all duration-300">
+            <div class="w-16 h-16 bg-gradient-to-br from-white to-gray-300 rounded-2xl flex items-center justify-center mb-6 mx-auto border border-white/20">
+              <i data-lucide="users" class="w-8 h-8 text-black"></i>
+            </div>
+            <h3 class="text-lg font-bold text-text-primary mb-4 text-center">Community Contributors</h3>
+            <p class="text-sm text-text-secondary leading-relaxed text-center">
+              Success comes from helping others succeed. We're looking for people who give feedback, share learnings, and celebrate wins together.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Application Process -->
+      <div class="mb-16">
+        <h2 class="text-2xl font-bold text-text-primary mb-8 text-center">Application Process</h2>
+        <div class="max-w-4xl mx-auto">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="text-center">
+              <div class="w-16 h-16 bg-gradient-to-br from-white to-gray-300 rounded-full flex items-center justify-center text-xl font-bold text-black mb-4 mx-auto border border-white/20">
+                1
+              </div>
+              <h3 class="text-lg font-semibold text-text-primary mb-3">Apply</h3>
+              <p class="text-sm text-text-secondary leading-relaxed">
+                Tell us about a problem you want to solve and why you're committed to building a solution in 8 weeks.
+              </p>
+            </div>
+            
+            <div class="text-center">
+              <div class="w-16 h-16 bg-gradient-to-br from-white to-gray-300 rounded-full flex items-center justify-center text-xl font-bold text-black mb-4 mx-auto border border-white/20">
+                2
+              </div>
+              <h3 class="text-lg font-semibold text-text-primary mb-3">Interview</h3>
+              <p class="text-sm text-text-secondary leading-relaxed">
+                30-minute conversation about your idea, goals, and commitment. We want to ensure mutual fit for success.
+              </p>
+            </div>
+            
+            <div class="text-center">
+              <div class="w-16 h-16 bg-gradient-to-br from-white to-gray-300 rounded-full flex items-center justify-center text-xl font-bold text-black mb-4 mx-auto border border-white/20">
+                3
+              </div>
+              <h3 class="text-lg font-semibold text-text-primary mb-3">Commit</h3>
+              <p class="text-sm text-text-secondary leading-relaxed">
+                Reserve your spot with course fee. Limited to 10 makers per cohort for personalized mentorship.
+              </p>
+            </div>
+            
+            <div class="text-center">
+              <div class="w-16 h-16 bg-gradient-to-br from-white to-gray-300 rounded-full flex items-center justify-center text-xl font-bold text-black mb-4 mx-auto border border-white/20">
+                4
+              </div>
+              <h3 class="text-lg font-semibold text-text-primary mb-3">Build</h3>
+              <p class="text-sm text-text-secondary leading-relaxed">
+                8 weeks of intensive building, learning, and shipping your product with expert guidance and peer support.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pricing and Value -->
+      <div class="text-center p-12 bg-primary-bg rounded-3xl border border-border-color mb-16">
+        <h2 class="text-3xl font-bold mb-6 text-text-primary">Investment in Your Future</h2>
+        <div class="mb-8">
+          <div class="text-5xl font-bold text-text-primary mb-4">₹49,990</div>
+          <div class="text-lg text-text-secondary mb-6">Complete 8-Week Program</div>
+          <div class="text-sm text-text-muted max-w-2xl mx-auto leading-relaxed">
+            Includes live sessions, 1:1 mentorship, access to premium AI tools, community support, and lifetime access to our maker network.
+          </div>
+        </div>
+        
+        <!-- Value Breakdown -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 text-left">
+          <div class="space-y-3">
+            <div class="flex items-center gap-3">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+              </div>
+              <span class="text-sm text-text-secondary">20 live expert sessions (₹25k value)</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+              </div>
+              <span class="text-sm text-text-secondary">1:1 weekly mentorship (₹20k value)</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+              </div>
+              <span class="text-sm text-text-secondary">Premium AI tool access (₹15k value)</span>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-center gap-3">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+              </div>
+              <span class="text-sm text-text-secondary">Lifetime community access (Priceless)</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+              </div>
+              <span class="text-sm text-text-secondary">Investor network introductions (₹50k+ value)</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="text-white flex-shrink-0 mt-1">
+                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+              </div>
+              <span class="text-sm text-text-secondary">Your launched product (₹100k+ potential)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Final CTA -->
+      <div class="text-center p-12 bg-gradient-to-br from-white/5 to-white/10 rounded-3xl border border-border-color">
+        <h2 class="text-3xl font-bold mb-6 text-text-primary leading-tight">Ready to Transform Into a Product Maker?</h2>
+        <p class="text-lg text-text-secondary mb-8 leading-relaxed max-w-2xl mx-auto">
+          Don't spend another year planning. Join the next cohort and ship your product in 8 weeks.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
+          <a href="#" class="ripple-btn inline-block px-10 py-4 bg-text-primary text-primary-bg font-bold text-lg rounded-lg hover:transform hover:scale-105 hover:shadow-xl transition-all duration-300">
+            Apply for June 2024 Cohort
+          </a>
+          <a href="#" class="inline-block px-8 py-4 border border-border-color text-text-primary font-semibold rounded-lg hover:bg-card-hover transition-all duration-300">
+            Schedule Info Call
+          </a>
+        </div>
+        <div class="text-sm text-text-muted">
+          <strong>Only 10 spots available</strong> |  Applications close soon |  Cohort starts June 22nd 2024
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JavaScript for Interactions (Maintained from Original) -->
+  <script>
+    // ===== SCROLL INDICATOR ===== 
+    function updateScrollIndicator() {
+      const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+      document.querySelector('.scroll-indicator').style.width = scrolled + '%';
+    }
+
+    // ===== NAVIGATION VISIBILITY =====
+    function handleNavVisibility() {
+      const nav = document.querySelector('.main-nav');
+      if (window.scrollY > 100) {
+        nav.style.opacity = '1';
+        nav.style.transform = 'translateY(0)';
+      } else {
+        nav.style.opacity = '0';
+        nav.style.transform = 'translateY(-100%)';
+      }
+    }
+
+    // ===== MAGNETIC HOVER EFFECTS =====
+    function handleMagneticEffect(card, e) {
+      const rect = card.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      
+      card.style.setProperty('--mouse-x', x + '%');
+      card.style.setProperty('--mouse-y', y + '%');
+    }
+
+    // ===== INTERSECTION OBSERVER =====
+    function handleIntersection(entries) {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }
+
+    // ===== SMOOTH SCROLLING =====
+    function smoothScrollTo(target) {
+      document.querySelector(target).scrollIntoView({
+        behavior: 'smooth'
+      });
+    }
+
+    // ===== RIPPLE EFFECT =====
+    function createRipple(button, e) {
+      const rect = button.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      const x = e.clientX - rect.left - size / 2;
+      const y = e.clientY - rect.top - size / 2;
+      
+      const ripple = document.createElement('span');
+      ripple.style.cssText = `
+        position: absolute;
+        width: ${size}px;
+        height: ${size}px;
+        left: ${x}px;
+        top: ${y}px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        transform: scale(0);
+        animation: ripple-animation 0.6s linear;
+        pointer-events: none;
+      `;
+      
+      button.appendChild(ripple);
+      
+      setTimeout(() => {
+        ripple.remove();
+      }, 600);
+    }
+
+    // Add ripple animation CSS
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes ripple-animation {
+        to {
+          transform: scale(4);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // ===== INITIALIZATION =====
+    document.addEventListener('DOMContentLoaded', function() {
+      // Scroll effects
+      window.addEventListener('scroll', () => {
+        updateScrollIndicator();
+        handleNavVisibility();
+      });
+      
+      // Intersection observer for fade-in animations
+      const observer = new IntersectionObserver(handleIntersection, {
+        threshold: 0.1
+      });
+      
+      document.querySelectorAll('.fade-in').forEach(el => {
+        observer.observe(el);
+      });
+      
+      // Magnetic hover effects
+      document.querySelectorAll('.magnetic-card').forEach(card => {
+        card.addEventListener('mousemove', (e) => handleMagneticEffect(card, e));
+      });
+      
+      // Smooth scrolling for navigation
+      document.querySelectorAll('a[href^="#"]').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const target = this.getAttribute('href');
+          if (target.length > 1) {
+            smoothScrollTo(target);
+          }
+        });
+      });
+      
+      // Ripple effects for buttons
+      document.querySelectorAll('.ripple-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+          createRipple(this, e);
+        });
+      });
+    });
+
+    // ===== NAVIGATION ACTIVE STATES =====
+    window.addEventListener('scroll', () => {
+      const sections = document.querySelectorAll('section[id]');
+      const navLinks = document.querySelectorAll('.nav-link');
+      
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (scrollY >= sectionTop - 200) {
+          current = section.getAttribute('id');
+        }
+      });
+      
+      navLinks.forEach(link => {
+        link.classList.remove('text-text-primary');
+        link.classList.add('text-text-secondary');
+        if (link.getAttribute('href') === '#' + current) {
+          link.classList.add('text-text-primary');
+          link.classList.remove('text-text-secondary');
+        }
+      });
+    });
+
+    // Toggle Section Function for Interactive Content
+    function toggleSection(sectionId) {
+      const section = document.querySelector(`[data-section="${sectionId}"]`);
+      const toggleIcon = section.querySelector('.toggle-icon');
+      
+      // Toggle collapsed class
+      section.classList.toggle('collapsed');
+      
+      // Rotate toggle icon
+      if (section.classList.contains('collapsed')) {
+        toggleIcon.style.transform = 'rotate(0deg)';
+      } else {
+        toggleIcon.style.transform = 'rotate(180deg)';
+      }
+    }
+
+    // Enhanced Navigation Functions
+    let currentWeekIndex = 0;
+    const weekTitles = [
+      'Week 0: Foundation',
+      'Week 1: First Principles', 
+      'Week 2: Market Research',
+      'Week 3: Product Design',
+      'Week 4: User Testing',
+      'Week 5: Technical Plan',
+      'Week 6: MVP Build',
+      'Week 7: Launch Prep',
+      'Week 8: Go Live'
+    ];
+
+    function navigateWeek(direction) {
+      const totalWeeks = 9; // 0-8
+      
+      if (direction === 'next' && currentWeekIndex < totalWeeks - 1) {
+        currentWeekIndex++;
+      } else if (direction === 'prev' && currentWeekIndex > 0) {
+        currentWeekIndex--;
+      }
+      
+      // Update all states
+      updateProgressIndicators();
+      updateCurrentWeekDisplay();
+      updateNavigationState();
+      
+      // Scroll to the week module specifically
+      const weekElement = document.querySelector(`.week-module[data-week="${currentWeekIndex}"]`);
+      if (weekElement) {
+        weekElement.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start',
+          inline: 'nearest'
+        });
+      }
+    }
+
+    function jumpToWeek(weekNumber) {
+      currentWeekIndex = weekNumber;
+      
+      // Update progress indicators
+      updateProgressIndicators();
+      updateCurrentWeekDisplay();
+      updateNavigationState();
+      
+      // Scroll to the week module specifically
+      const weekElement = document.querySelector(`.week-module[data-week="${weekNumber}"]`);
+      if (weekElement) {
+        weekElement.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start',
+          inline: 'nearest'
+        });
+      }
+      
+      // Hide quick nav dropdown
+      document.getElementById('quick-nav-dropdown').classList.add('hidden');
+    }
+
+    function toggleQuickNav() {
+      const dropdown = document.getElementById('quick-nav-dropdown');
+      dropdown.classList.toggle('hidden');
+    }
+
+    function updateNavigationState() {
+      const prevBtn = document.querySelector('.prev-week');
+      const nextBtn = document.querySelector('.next-week');
+      
+      // Update button states
+      prevBtn.disabled = currentWeekIndex === 0;
+      nextBtn.disabled = currentWeekIndex === 8;
+      
+      // Update active states in quick nav
+      document.querySelectorAll('.quick-nav-item').forEach((item, index) => {
+        item.classList.toggle('active', index === currentWeekIndex);
+      });
+    }
+
+    function updateProgressIndicators() {
+      // Update week progress circles
+      document.querySelectorAll('.week-progress-item').forEach((item, index) => {
+        item.classList.toggle('active', index === currentWeekIndex);
+      });
+      
+      // Update active week highlighting
+      document.querySelectorAll('.week-module').forEach((module, index) => {
+        module.classList.toggle('active-week', index === currentWeekIndex);
+      });
+      
+      // Update progress stats (hours, sessions, percentage)
+      updateProgressStats();
+    }
+
+    function updateCurrentWeekDisplay() {
+      document.getElementById('current-week').textContent = weekTitles[currentWeekIndex];
+    }
+
+    // Session structure: 50 total hours, 16 total sessions
+    // Week 0: 1 hour (1 session), Weeks 1-7: 6 hours each (2 sessions × 3h), Week 8: 7 hours (2 sessions)  
+    const weekHours = [1, 6, 6, 6, 6, 6, 6, 6, 7]; // Total: 50 hours
+    const weekSessions = [1, 2, 2, 2, 2, 2, 2, 2, 2]; // Total: 16 sessions
+
+    function calculateProgress() {
+      let completedHours = 0;
+      let completedSessions = 0;
+      
+      // Calculate completed hours and sessions up to current week
+      for (let i = 0; i < currentWeekIndex; i++) {
+        completedHours += weekHours[i];
+        completedSessions += weekSessions[i];
+      }
+      
+      const remainingHours = 50 - completedHours;
+      const progressPercentage = Math.round((completedHours / 50) * 100);
+      
+      return { completedHours, completedSessions, remainingHours, progressPercentage };
+    }
+
+    function updateProgressStats() {
+      const progress = calculateProgress();
+      
+      // Check if completed (at Week 8 or beyond)
+      const isCompleted = currentWeekIndex >= 8;
+      
+      if (isCompleted) {
+        // Show completion state
+        document.querySelector('.grid.grid-cols-3 .text-lg.font-bold').textContent = '0h';
+        document.querySelectorAll('.grid.grid-cols-3 .text-lg.font-bold')[1].textContent = '16';
+        document.getElementById('overall-progress').textContent = '100%';
+        document.getElementById('progress-bar').style.width = '100%';
+        
+        // Update the "Next" section to show congratulations
+        const nextSection = document.querySelectorAll('.grid.grid-cols-3 .text-center')[2];
+        nextSection.innerHTML = `
+          <div class="text-lg font-bold text-white">🎉 Congrats!</div>
+          <div class="text-xs text-text-secondary">AI Powered Product Maker</div>
+        `;
+      } else {
+        // Show normal progress state
+        document.querySelector('.grid.grid-cols-3 .text-lg.font-bold').textContent = progress.remainingHours + 'h';
+        document.querySelectorAll('.grid.grid-cols-3 .text-lg.font-bold')[1].textContent = progress.completedSessions;
+        document.getElementById('overall-progress').textContent = progress.progressPercentage + '%';
+        document.getElementById('progress-bar').style.width = progress.progressPercentage + '%';
+        
+        // Show next week info
+        const nextWeekIndex = currentWeekIndex + 1;
+        const nextSection = document.querySelectorAll('.grid.grid-cols-3 .text-center')[2];
+        if (nextWeekIndex < weekTitles.length) {
+          nextSection.innerHTML = `
+            <div class="text-lg font-bold text-white">Next</div>
+            <div class="text-xs text-text-secondary">${weekTitles[nextWeekIndex]}</div>
+          `;
+        } else {
+          nextSection.innerHTML = `
+            <div class="text-lg font-bold text-white">Complete</div>
+            <div class="text-xs text-text-secondary">All weeks finished!</div>
+          `;
+        }
+      }
+    }
+
+    // Initialize curriculum navigation
+    document.addEventListener('DOMContentLoaded', function() {
+      updateNavigationState();
+      updateProgressIndicators();
+      updateCurrentWeekDisplay();
+      updateProgressStats();
+      
+      // Add click handlers for week progress indicators
+      document.querySelectorAll('.week-progress-item').forEach((item, index) => {
+        item.addEventListener('click', () => jumpToWeek(index));
+      });
+      
+      // Close quick nav when clicking outside
+      document.addEventListener('click', function(e) {
+        const quickNavBtn = document.querySelector('.quick-nav-btn');
+        const dropdown = document.getElementById('quick-nav-dropdown');
+        
+        if (!quickNavBtn.contains(e.target) && !dropdown.contains(e.target)) {
+          dropdown.classList.add('hidden');
+        }
+      });
+    });
+
+    // Initialize Lucide icons
+    lucide.createIcons();
+  </script>
+</body>
+</html>
